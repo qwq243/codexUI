@@ -2282,6 +2282,35 @@ Toggle "Free mode" in settings to use free OpenRouter models without an OpenAI A
 #### Rollback/Cleanup
 - Remove any exported Markdown files created during testing if you do not need them.
 
+### Feature: Windows batch launcher for local CodexUI startup
+
+#### Prerequisites
+- Windows environment with Node.js 18+ and `pnpm` available in `PATH`.
+- Repository dependencies already installed.
+- `codex` CLI is available in `PATH` or can be installed by the project runtime.
+- If you want to verify the dev-port conflict is avoided, optionally start a separate Vite dev server on `http://127.0.0.1:4173` first.
+
+#### Steps
+1. In the repository root, double-click `start-codexui.bat`.
+2. Confirm a dedicated terminal window opens, stays visible, and starts the local CodexUI server without forcing a rebuild when `dist/` and `dist-cli/` already exist.
+3. Verify the launcher requests port `5900` by default instead of `4173`, so it does not collide with the Vite dev server port.
+4. Confirm the page loads with working data rather than only a static shell.
+5. Verify the local API endpoint `http://127.0.0.1:5900/codex-api/meta/methods` returns successfully when port `5900` is free.
+6. Close the server with `Ctrl+C` and confirm the batch window stays open so the exit status can be read.
+7. If possible, temporarily run the script on a machine without `node` or without `pnpm` in `PATH`, and confirm it shows the corresponding missing-dependency prompt before exiting.
+8. Run `start-codexui.bat --build` and confirm it performs an explicit rebuild before launching.
+
+#### Expected Results
+- Double-clicking the batch file starts the complete local CodexUI service on requested port `5900` by default.
+- The launcher does not reuse the Vite dev port `4173`, so an existing dev server is not mistaken for the local packaged UI.
+- The launcher reuses existing `dist/` and `dist-cli/` output by default and rebuilds only when artifacts are missing or `--build` is passed.
+- The launcher window remains visible instead of flashing closed immediately.
+- The browser opens automatically to the actual local CodexUI page chosen by the CLI.
+- The UI can communicate with `/codex-api/*` successfully.
+- The launcher starts the server via `node dist-cli/index.js` after setting runtime environment variables in the batch process.
+- Missing dependency checks fail fast with clear prompts.
+- When the server exits, the window pauses instead of closing immediately.
+
 #### Rollback/Cleanup
 - Close the batch window after testing.
 - Stop the dev server if it is still running.
