@@ -219,6 +219,29 @@ This file tracks manual regression and feature verification steps.
 
 ### Feature: Dark theme states for runtime mode toggle
 
+### Feature: Simplified Chinese UI copy for primary desktop flows
+
+#### Prerequisites
+- App is running from this repository.
+- At least one local project and one existing thread are available.
+- Skills Hub and Review pane routes can be opened in the app.
+
+#### Steps
+1. Open the home/new-thread screen and verify the folder picker, runtime selector, base branch picker, and trending project section render Chinese labels.
+2. Open the sidebar and verify thread search, thread organization menu, project menu, thread menu, rename dialog, and delete dialog render Chinese labels.
+3. Open an existing thread and verify the composer area, attachment menu, file mention empty state, skill picker, queued messages, and rate limit cards render Chinese labels.
+4. Trigger a pending approval or input request and verify the pending request panel buttons, field labels, and helper text render Chinese labels.
+5. Open `Skills Hub` and verify the page title, subtitle, sync panel, installed section, search controls, skill card badges, and skill detail modal render Chinese labels.
+6. Open the review pane for a Git project and verify the toolbar, compare scope controls, empty states, file sheet, and review action buttons render Chinese labels.
+
+#### Expected Results
+- Primary user-facing UI copy is displayed in Simplified Chinese across home, sidebar, thread, pending-request, Skills Hub, and review flows.
+- Technical names such as `Codex`, `GitHub`, `OpenRouter`, model IDs, and `API key` remain in English.
+- No code comments, identifiers, or internal technical strings are exposed as untranslated primary UI copy in the tested flows.
+
+#### Rollback/Cleanup
+- None.
+
 #### Prerequisites
 - App is running from this repository.
 - Home/new-thread screen is open.
@@ -2232,3 +2255,33 @@ Toggle "Free mode" in settings to use free OpenRouter models without an OpenAI A
 
 #### Rollback/Cleanup
 - Run `codexui login` to restore Codex authentication if needed.
+
+### Feature: Simplified Chinese UI copy for remaining desktop labels
+
+#### Prerequisites
+- Install dependencies with `pnpm install`.
+- Start the app with `pnpm run dev -- --host 127.0.0.1 --port 4173`.
+- Prepare at least one thread that contains plain text, command output, attached files, and images.
+
+#### Steps
+1. Open the desktop UI and check the main settings, thread list, composer settings, skills page, and thread detail area.
+2. Verify remaining common labels are shown in Chinese, including provider label, worktree-related labels, plan mode label, sort-by-name label, and thread fallback titles.
+3. Open a thread with no custom title or create a new blank thread, then confirm the fallback title is shown as `未命名线程`.
+4. In the conversation view, open the diff viewer for a changed file.
+5. Verify the close button tooltip and the empty diff state copy are both Chinese.
+6. Export the current thread as Markdown.
+7. Open the exported `.md` file and verify the exported metadata, role headings, command metadata, attachment headings, image headings, and empty-output fallback are all Chinese.
+8. If the thread title contains only Chinese characters, verify the exported file still downloads successfully and falls back to a readable Chinese filename.
+
+#### Expected Results
+- Remaining desktop UI copy is Chinese wherever end users directly read it.
+- Fallback thread titles no longer show `Untitled thread`, `Forked chat`, or `Fork: ...`.
+- Diff viewer empty state and export Markdown metadata are readable in Chinese.
+- Exported file names still work on Windows.
+
+#### Rollback/Cleanup
+- Remove any exported Markdown files created during testing if you do not need them.
+
+#### Rollback/Cleanup
+- Close the batch window after testing.
+- Stop the dev server if it is still running.

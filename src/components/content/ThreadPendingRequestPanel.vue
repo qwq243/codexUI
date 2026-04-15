@@ -15,7 +15,7 @@
         </p>
 
         <section class="thread-pending-request-approval">
-          <div class="thread-pending-request-options" role="radiogroup" aria-label="Approval choices">
+          <div class="thread-pending-request-options" role="radiogroup" :aria-label="zhCN.pendingRequest.approvalChoices">
             <button
               v-for="(option, index) in approvalOptions"
               :key="option.id"
@@ -40,7 +40,7 @@
                 class="thread-pending-request-inline-control"
                 type="text"
                 :value="approvalFreeformText"
-                placeholder="No, and tell Codex what to do differently"
+                :placeholder="zhCN.pendingRequest.noAndTellCodex"
                 @focus="onFocusApprovalOther"
                 @input="onApprovalOtherInput"
                 @keydown.enter.prevent="onSubmitApproval(request)"
@@ -48,10 +48,10 @@
             </label>
 
             <button type="button" class="thread-pending-request-secondary" @click="onRespondApproval(request, 'cancel')">
-              Skip
+              {{ zhCN.pendingRequest.skip }}
             </button>
             <button type="button" class="thread-pending-request-primary" @click="onSubmitApproval(request)">
-              Send
+              {{ zhCN.common.send }}
             </button>
           </footer>
         </section>
@@ -63,7 +63,7 @@
             <p class="thread-pending-request-eyebrow">{{ requestPanelTitle(request) }}</p>
             <p class="thread-pending-request-title">{{ requestPanelPrompt(request) }}</p>
           </div>
-          <span v-if="(requestCount ?? 0) > 1" class="thread-pending-request-counter">{{ requestCount ?? 0 }} pending</span>
+          <span v-if="(requestCount ?? 0) > 1" class="thread-pending-request-counter">{{ zhCN.pendingRequest.pendingCount(requestCount ?? 0) }}</span>
         </header>
 
         <div v-if="requestPreview(request)" class="thread-pending-request-preview">
@@ -72,7 +72,7 @@
 
         <section v-if="request.method === 'mcpServer/elicitation/request'" class="thread-pending-request-user-input">
           <p v-if="readMcpElicitationServerName(request)" class="thread-pending-request-question-description">
-            Server: {{ readMcpElicitationServerName(request) }}
+            {{ zhCN.pendingRequest.server }}: {{ readMcpElicitationServerName(request) }}
           </p>
 
           <a
@@ -82,7 +82,7 @@
             target="_blank"
             rel="noopener noreferrer"
           >
-            Open authorization link
+            {{ zhCN.pendingRequest.openAuthorizationLink }}
           </a>
 
           <div
@@ -96,7 +96,7 @@
             <p v-if="field.description" class="thread-pending-request-question-text">{{ field.description }}</p>
 
             <label v-if="field.kind === 'string' || field.kind === 'number'" class="thread-pending-request-input-wrap">
-              <span class="thread-pending-request-select-label">Value</span>
+              <span class="thread-pending-request-select-label">{{ zhCN.pendingRequest.value }}</span>
               <input
                 class="thread-pending-request-input"
                 :type="field.inputType"
@@ -106,26 +106,26 @@
             </label>
 
             <label v-else-if="field.kind === 'boolean'" class="thread-pending-request-select-wrap">
-              <span class="thread-pending-request-select-label">Choice</span>
+              <span class="thread-pending-request-select-label">{{ zhCN.pendingRequest.choice }}</span>
               <select
                 class="thread-pending-request-select"
                 :value="serializeMcpBooleanValue(readMcpElicitationFieldValue(request.id, field))"
                 @change="onMcpElicitationBooleanChange(request.id, field, $event)"
               >
-                <option v-if="!field.hasExplicitDefault" value="">Select true or false</option>
-                <option value="true">True</option>
-                <option value="false">False</option>
+                <option v-if="!field.hasExplicitDefault" value="">{{ zhCN.pendingRequest.selectTrueOrFalse }}</option>
+                <option value="true">{{ zhCN.pendingRequest.true }}</option>
+                <option value="false">{{ zhCN.pendingRequest.false }}</option>
               </select>
             </label>
 
             <label v-else-if="field.kind === 'singleEnum'" class="thread-pending-request-select-wrap">
-              <span class="thread-pending-request-select-label">Choice</span>
+              <span class="thread-pending-request-select-label">{{ zhCN.pendingRequest.choice }}</span>
               <select
                 class="thread-pending-request-select"
                 :value="String(readMcpElicitationFieldValue(request.id, field) ?? '')"
                 @change="onMcpElicitationFieldInput(request.id, field, $event)"
               >
-                <option v-if="!field.hasExplicitDefault" value="">Select an option</option>
+                <option v-if="!field.hasExplicitDefault" value="">{{ zhCN.pendingRequest.selectAnOption }}</option>
                 <option
                   v-for="option in field.options"
                   :key="`${request.id}:${field.key}:${option.value}`"
@@ -159,13 +159,13 @@
 
           <footer class="thread-pending-request-footer">
             <button type="button" class="thread-pending-request-secondary" @click="onRespondMcpElicitation(request, 'cancel')">
-              Cancel
+              {{ zhCN.common.cancel }}
             </button>
             <button type="button" class="thread-pending-request-secondary" @click="onRespondMcpElicitation(request, 'decline')">
-              Decline
+              {{ zhCN.common.decline }}
             </button>
             <button type="button" class="thread-pending-request-primary" @click="onRespondMcpElicitation(request, 'accept')">
-              Continue
+              {{ zhCN.common.continue }}
             </button>
           </footer>
         </section>
@@ -181,7 +181,7 @@
 
             <div v-if="question.options.length > 0" class="thread-pending-request-question-options">
               <label class="thread-pending-request-select-wrap">
-                <span class="thread-pending-request-select-label">Choice</span>
+                <span class="thread-pending-request-select-label">{{ zhCN.pendingRequest.choice }}</span>
                 <select
                   class="thread-pending-request-select"
                   :value="readQuestionAnswer(request.id, question.id, question.options[0]?.label || '')"
@@ -206,12 +206,12 @@
             </div>
 
             <label v-if="question.isOther" class="thread-pending-request-input-wrap">
-              <span class="thread-pending-request-select-label">Other answer</span>
+              <span class="thread-pending-request-select-label">{{ zhCN.pendingRequest.otherAnswer }}</span>
               <input
                 class="thread-pending-request-input"
                 type="text"
                 :value="readQuestionOtherAnswer(request.id, question.id)"
-                placeholder="Other answer"
+                :placeholder="zhCN.pendingRequest.otherAnswer"
                 @input="onQuestionOtherAnswerInput(request.id, question.id, $event)"
               />
             </label>
@@ -219,26 +219,26 @@
 
           <footer class="thread-pending-request-footer">
             <button type="button" class="thread-pending-request-primary" @click="onRespondToolRequestUserInput(request)">
-              Send
+              {{ zhCN.common.send }}
             </button>
           </footer>
         </section>
 
         <section v-else-if="request.method === 'item/tool/call'" class="thread-pending-request-actions">
           <button type="button" class="thread-pending-request-primary" @click="onRespondToolCallFailure(request)">
-            Fail Tool Call
+            {{ zhCN.pendingRequest.failToolCall }}
           </button>
           <button type="button" class="thread-pending-request-secondary" @click="onRespondToolCallSuccess(request)">
-            Success (Empty)
+            {{ zhCN.pendingRequest.successEmpty }}
           </button>
         </section>
 
         <section v-else class="thread-pending-request-actions">
           <button type="button" class="thread-pending-request-primary" @click="onRespondEmptyResult(request)">
-            Return Empty Result
+            {{ zhCN.pendingRequest.returnEmptyResult }}
           </button>
           <button type="button" class="thread-pending-request-secondary" @click="onRejectUnknownRequest(request)">
-            Reject Request
+            {{ zhCN.pendingRequest.rejectRequest }}
           </button>
         </section>
       </template>
@@ -249,6 +249,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type { UiServerRequest, UiServerRequestReply } from '../../types/codex'
+import { zhCN } from '../../copy/zhCN'
 
 type ApprovalDecision = 'accept' | 'acceptForSession' | 'decline' | 'cancel'
 
@@ -364,22 +365,22 @@ function readRequestReason(request: UiServerRequest): string {
 }
 
 function requestPanelTitle(request: UiServerRequest): string {
-  if (isApprovalRequest(request)) return 'Awaiting approval'
-  if (isMcpElicitationRequest(request)) return 'MCP server input required'
-  if (request.method === 'item/tool/requestUserInput') return 'Awaiting response'
-  if (request.method === 'item/tool/call') return 'Tool call waiting for response'
+  if (isApprovalRequest(request)) return zhCN.pendingRequest.awaitingApproval
+  if (isMcpElicitationRequest(request)) return zhCN.pendingRequest.mcpInputRequired
+  if (request.method === 'item/tool/requestUserInput') return zhCN.pendingRequest.awaitingResponse
+  if (request.method === 'item/tool/call') return zhCN.pendingRequest.toolCallWaiting
   return request.method
 }
 
 function requestPanelPrompt(request: UiServerRequest): string {
   const explicit = readRequestReason(request)
   if (explicit) return explicit
-  if (isCommandApprovalRequest(request)) return 'Do you want to run this command?'
-  if (isFileApprovalRequest(request)) return 'Do you want to make these changes?'
-  if (isPermissionsApprovalRequest(request)) return 'Do you want to grant these permissions?'
-  if (isMcpElicitationRequest(request)) return 'An MCP server needs your input before Codex can continue.'
-  if (request.method === 'item/tool/requestUserInput') return 'Codex needs your answer before it can continue.'
-  return 'Codex is waiting for a response before it can continue.'
+  if (isCommandApprovalRequest(request)) return zhCN.pendingRequest.runThisCommand
+  if (isFileApprovalRequest(request)) return zhCN.pendingRequest.makeTheseChanges
+  if (isPermissionsApprovalRequest(request)) return zhCN.pendingRequest.grantThesePermissions
+  if (isMcpElicitationRequest(request)) return zhCN.pendingRequest.mcpNeedsInput
+  if (request.method === 'item/tool/requestUserInput') return zhCN.pendingRequest.codexNeedsAnswer
+  return zhCN.pendingRequest.codexWaitingForResponse
 }
 
 function unwrapApprovalCommand(value: string): string {
@@ -440,9 +441,9 @@ function formatPermissionsPreview(value: unknown): string {
 
   const readPaths = Array.isArray(fileSystem?.read) ? fileSystem.read.filter((entry): entry is string => typeof entry === 'string') : []
   const writePaths = Array.isArray(fileSystem?.write) ? fileSystem.write.filter((entry): entry is string => typeof entry === 'string') : []
-  if (readPaths.length > 0) parts.push(`Read: ${readPaths.join(', ')}`)
-  if (writePaths.length > 0) parts.push(`Write: ${writePaths.join(', ')}`)
-  if (network?.enabled === true) parts.push('Network access')
+  if (readPaths.length > 0) parts.push(zhCN.pendingRequest.read(readPaths.join(', ')))
+  if (writePaths.length > 0) parts.push(zhCN.pendingRequest.write(writePaths.join(', ')))
+  if (network?.enabled === true) parts.push(zhCN.pendingRequest.networkAccess)
 
   return parts.join(' • ')
 }
@@ -450,8 +451,8 @@ function formatPermissionsPreview(value: unknown): string {
 function approvalOptionsForRequest(request: UiServerRequest | null): ApprovalOption[] {
   if (!request || !isApprovalRequest(request)) return []
   return [
-    { id: 'accept', label: 'Yes' },
-    { id: 'acceptForSession', label: 'Yes for Session' },
+    { id: 'accept', label: zhCN.pendingRequest.yes },
+    { id: 'acceptForSession', label: zhCN.pendingRequest.yesForSession },
   ]
 }
 
@@ -800,8 +801,8 @@ function validateMcpElicitationRequest(request: UiServerRequest): string {
     .map((field) => field.label)
 
   if (missingLabels.length === 0) return ''
-  if (missingLabels.length === 1) return `Answer the required field: ${missingLabels[0]}.`
-  return `Answer the required fields: ${missingLabels.join(', ')}.`
+  if (missingLabels.length === 1) return zhCN.pendingRequest.answerRequiredField(missingLabels[0])
+  return zhCN.pendingRequest.answerRequiredFields(missingLabels.join('、'))
 }
 
 function buildMcpElicitationContent(request: UiServerRequest): Record<string, unknown> {
@@ -850,7 +851,7 @@ function onRespondApproval(request: UiServerRequest, decision: ApprovalDecision)
         id: request.id,
         error: {
           code: -32000,
-          message: decision === 'cancel' ? 'Cancelled from CodexUI.' : 'Declined from CodexUI.',
+          message: decision === 'cancel' ? zhCN.pendingRequest.cancelledFromCodexUi : zhCN.pendingRequest.declinedFromCodexUi,
         },
       })
       return
@@ -935,7 +936,7 @@ function onRespondToolCallFailure(request: UiServerRequest): void {
       contentItems: [
         {
           type: 'inputText',
-          text: 'Tool call rejected from CodexUI.',
+          text: zhCN.pendingRequest.toolCallRejected,
         },
       ],
     },
@@ -964,7 +965,7 @@ function onRejectUnknownRequest(request: UiServerRequest): void {
     id: request.id,
     error: {
       code: -32000,
-      message: 'Rejected from CodexUI.',
+      message: zhCN.pendingRequest.rejectedFromCodexUi,
     },
   })
 }

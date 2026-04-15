@@ -15,8 +15,8 @@
               class="sidebar-search-toggle"
               type="button"
               :aria-pressed="isSidebarSearchVisible"
-              aria-label="Search threads"
-              title="Search threads"
+              :aria-label="zhCN.sidebar.searchThreads"
+              :title="zhCN.sidebar.searchThreads"
               @click="toggleSidebarSearch"
             >
               <IconTablerSearch class="sidebar-search-toggle-icon" />
@@ -30,14 +30,14 @@
               v-model="sidebarSearchQuery"
               class="sidebar-search-input"
               type="text"
-              placeholder="Filter threads..."
+              :placeholder="zhCN.sidebar.filterThreads"
               @keydown="onSidebarSearchKeydown"
             />
             <button
               v-if="sidebarSearchQuery.length > 0"
               class="sidebar-search-clear"
               type="button"
-              aria-label="Clear search"
+              :aria-label="zhCN.common.clearSearch"
               @click="clearSidebarSearch"
             >
               <IconTablerX class="sidebar-search-clear-icon" />
@@ -51,7 +51,7 @@
             type="button"
             @click="router.push({ name: 'skills' }); isMobile && setSidebarCollapsed(true)"
           >
-            Skills Hub
+            {{ zhCN.sidebar.skillsHub }}
           </button>
 
           <SidebarThreadTree :groups="projectGroups" :project-display-name-by-id="projectDisplayNameById"
@@ -88,12 +88,12 @@
                       class="sidebar-settings-account-collapse"
                       type="button"
                       :aria-expanded="!isAccountsSectionCollapsed"
-                      :title="isAccountsSectionCollapsed ? 'Expand accounts' : 'Collapse accounts'"
+                      :title="isAccountsSectionCollapsed ? zhCN.settings.expandAccounts : zhCN.settings.collapseAccounts"
                       @click="toggleAccountsSectionCollapsed"
                     >
                       <span class="sidebar-settings-account-collapse-icon">{{ isAccountsSectionCollapsed ? '▸' : '▾' }}</span>
                     </button>
-                    <span class="sidebar-settings-account-title">Accounts</span>
+                    <span class="sidebar-settings-account-title">{{ zhCN.settings.accounts }}</span>
                     <span class="sidebar-settings-account-count">{{ accounts.length }}</span>
                   </div>
                   <button
@@ -102,13 +102,13 @@
                     :disabled="isRefreshingAccounts || isSwitchingAccounts"
                     @click="onRefreshAccounts"
                   >
-                    {{ isRefreshingAccounts ? 'Reloading…' : 'Reload' }}
+                    {{ isRefreshingAccounts ? zhCN.common.loading : zhCN.common.reload }}
                   </button>
                 </div>
                 <template v-if="!isAccountsSectionCollapsed">
                   <p v-if="accountActionError" class="sidebar-settings-account-error">{{ accountActionError }}</p>
                   <p v-if="accounts.length === 0" class="sidebar-settings-account-empty">
-                    Run `codex login`, then click reload.
+                    {{ zhCN.account.runCodexLogin }}
                   </p>
                   <div v-else class="sidebar-settings-account-list">
                   <article
@@ -126,7 +126,7 @@
                     @mouseleave="onAccountCardPointerLeave(account.accountId)"
                   >
                     <div class="sidebar-settings-account-main">
-                      <p class="sidebar-settings-account-email">{{ account.email || 'Account' }}</p>
+                      <p class="sidebar-settings-account-email">{{ account.email || zhCN.common.account }}</p>
                       <p class="sidebar-settings-account-meta">
                         {{ formatAccountMeta(account) }}
                       </p>
@@ -134,7 +134,7 @@
                         {{ formatAccountQuota(account) }}
                       </p>
                       <p class="sidebar-settings-account-id">
-                        Workspace {{ shortAccountId(account.accountId) }}
+                        {{ zhCN.account.workspace }} {{ shortAccountId(account.accountId) }}
                       </p>
                     </div>
                     <div class="sidebar-settings-account-actions">
@@ -164,36 +164,36 @@
                 </template>
               </div>
               <button class="sidebar-settings-row" type="button" :title="SETTINGS_HELP.sendWithEnter" @click="toggleSendWithEnter">
-                <span class="sidebar-settings-label">Require ⌘ + enter to send</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.requireCommandEnter }}</span>
                 <span class="sidebar-settings-toggle" :class="{ 'is-on': !sendWithEnter }" />
               </button>
               <button class="sidebar-settings-row" type="button" :title="SETTINGS_HELP.inProgressSendMode" @click="cycleInProgressSendMode">
-                <span class="sidebar-settings-label">When busy, send as</span>
-                <span class="sidebar-settings-value">{{ inProgressSendMode === 'steer' ? 'Steer' : 'Queue' }}</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.busySendAs }}</span>
+                <span class="sidebar-settings-value">{{ inProgressSendMode === 'steer' ? '接管' : '排队' }}</span>
               </button>
               <button class="sidebar-settings-row" type="button" :title="SETTINGS_HELP.appearance" @click="cycleDarkMode">
-                <span class="sidebar-settings-label">Appearance</span>
-                <span class="sidebar-settings-value">{{ darkMode === 'system' ? 'System' : darkMode === 'dark' ? 'Dark' : 'Light' }}</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.appearance }}</span>
+                <span class="sidebar-settings-value">{{ darkMode === 'system' ? zhCN.theme.system : darkMode === 'dark' ? zhCN.theme.dark : zhCN.theme.light }}</span>
               </button>
               <button class="sidebar-settings-row" type="button" :title="SETTINGS_HELP.chatWidth" @click="cycleChatWidth">
-                <span class="sidebar-settings-label">Chat width</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.chatWidth }}</span>
                 <span class="sidebar-settings-value">{{ chatWidthLabel }}</span>
               </button>
               <button class="sidebar-settings-row" type="button" :title="SETTINGS_HELP.dictationClickToToggle" @click="toggleDictationClickToToggle">
-                <span class="sidebar-settings-label">Click to toggle dictation</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.clickToToggleDictation }}</span>
                 <span class="sidebar-settings-toggle" :class="{ 'is-on': dictationClickToToggle }" />
               </button>
               <button class="sidebar-settings-row" type="button" :title="SETTINGS_HELP.dictationAutoSend" @click="toggleDictationAutoSend">
-                <span class="sidebar-settings-label">Auto send dictation</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.autoSendDictation }}</span>
                 <span class="sidebar-settings-toggle" :class="{ 'is-on': dictationAutoSend }" />
               </button>
 
               <button class="sidebar-settings-row" type="button" :title="SETTINGS_HELP.githubTrendingProjects" @click="toggleGithubTrendingProjects">
-                <span class="sidebar-settings-label">GitHub trending projects</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.githubTrendingProjects }}</span>
                 <span class="sidebar-settings-toggle" :class="{ 'is-on': showGithubTrendingProjects }" />
               </button>
-              <div class="sidebar-settings-row sidebar-settings-row--select" title="Choose the API provider for the Codex backend">
-                <span class="sidebar-settings-label">Provider</span>
+              <div class="sidebar-settings-row sidebar-settings-row--select" title="选择 Codex 后端的 API 提供方">
+                <span class="sidebar-settings-label">{{ zhCN.settings.provider }}</span>
                 <select
                   class="sidebar-settings-provider-select"
                   :value="selectedProvider"
@@ -202,18 +202,18 @@
                 >
                   <option value="codex">Codex</option>
                   <option value="openrouter">OpenRouter</option>
-                  <option value="custom">Custom endpoint</option>
+                  <option value="custom">自定义端点</option>
                 </select>
               </div>
               <div v-if="selectedProvider === 'openrouter'" class="sidebar-settings-row sidebar-settings-row--input">
                 <div class="sidebar-settings-provider-info">
-                  <span class="sidebar-settings-label">OpenRouter API key</span>
+                  <span class="sidebar-settings-label">{{ zhCN.settings.openRouterApiKey }}</span>
                   <a
                     class="sidebar-settings-provider-link"
                     href="https://openrouter.ai/keys"
                     target="_blank"
                     rel="noopener noreferrer"
-                  >Get API key</a>
+                  >{{ zhCN.settings.getApiKey }}</a>
                 </div>
                 <div class="sidebar-settings-key-group">
                   <template v-if="freeModeHasCustomKey && !freeModeCustomKey">
@@ -222,7 +222,7 @@
                       class="sidebar-settings-key-clear"
                       type="button"
                       :disabled="freeModeCustomKeySaving"
-                      title="Remove custom key, use community keys"
+                      :title="zhCN.settings.removeCustomKeyUseCommunity"
                       @click="clearFreeModeCustomKey"
                     >&#x2715;</button>
                   </template>
@@ -231,7 +231,7 @@
                       v-model="freeModeCustomKey"
                       class="sidebar-settings-key-input"
                       type="password"
-                      placeholder="sk-or-v1-... (optional, uses free keys if empty)"
+                      :placeholder="zhCN.settings.customKeyPlaceholder"
                       @keydown.enter="saveFreeModeCustomKey"
                     />
                     <button
@@ -239,18 +239,18 @@
                       type="button"
                       :disabled="freeModeCustomKeySaving || !freeModeCustomKey.trim()"
                       @click="saveFreeModeCustomKey"
-                    >{{ freeModeCustomKeySaving ? '...' : 'Set' }}</button>
+                    >{{ freeModeCustomKeySaving ? '...' : zhCN.settings.set }}</button>
                   </template>
                 </div>
               </div>
               <div v-if="selectedProvider === 'custom'" class="sidebar-settings-row sidebar-settings-row--input">
-                <span class="sidebar-settings-label">Custom endpoint URL</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.customEndpointUrl }}</span>
                 <div class="sidebar-settings-key-group">
                   <input
                     v-model="customEndpointUrl"
                     class="sidebar-settings-key-input"
                     type="url"
-                    placeholder="https://api.example.com/v1"
+                    :placeholder="zhCN.settings.endpointPlaceholder"
                     @keydown.enter="saveCustomEndpoint"
                   />
                 </div>
@@ -260,7 +260,7 @@
                     v-model="customEndpointKey"
                     class="sidebar-settings-key-input"
                     type="password"
-                    placeholder="Bearer token (optional)"
+                    :placeholder="zhCN.settings.bearerTokenPlaceholder"
                     @keydown.enter="saveCustomEndpoint"
                   />
                   <button
@@ -268,29 +268,29 @@
                     type="button"
                     :disabled="freeModeCustomKeySaving || !customEndpointUrl.trim()"
                     @click="saveCustomEndpoint"
-                  >{{ freeModeCustomKeySaving ? '...' : 'Save' }}</button>
+                  >{{ freeModeCustomKeySaving ? '...' : zhCN.common.save }}</button>
                 </div>
               </div>
               <div class="sidebar-settings-row sidebar-settings-row--select" :title="SETTINGS_HELP.dictationLanguage">
-                <span class="sidebar-settings-label">Dictation language</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.dictationLanguage }}</span>
                 <ComposerDropdown
                   class="sidebar-settings-language-dropdown"
                   :model-value="dictationLanguage"
                   :options="dictationLanguageOptions"
-                  placeholder="Auto-detect"
+                  :placeholder="zhCN.settings.autoDetect"
                   open-direction="up"
                   :enable-search="true"
-                  search-placeholder="Search language..."
+                  :search-placeholder="zhCN.settings.searchLanguage"
                   @update:model-value="onDictationLanguageChange"
                 />
               </div>
               <button class="sidebar-settings-row" type="button" aria-live="polite" @click="isTelegramConfigOpen = !isTelegramConfigOpen">
-                <span class="sidebar-settings-label">Telegram</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.telegram }}</span>
                 <span class="sidebar-settings-value">{{ telegramStatusText }}</span>
               </button>
               <div v-if="isTelegramConfigOpen" class="sidebar-settings-telegram-panel">
                 <label class="sidebar-settings-field">
-                  <span class="sidebar-settings-field-label">Bot token</span>
+                  <span class="sidebar-settings-field-label">{{ zhCN.settings.botToken }}</span>
                   <input
                     v-model="telegramBotTokenDraft"
                     class="sidebar-settings-input"
@@ -301,7 +301,7 @@
                   >
                 </label>
                 <label class="sidebar-settings-field">
-                  <span class="sidebar-settings-field-label">Allowed Telegram user IDs</span>
+                  <span class="sidebar-settings-field-label">{{ zhCN.settings.allowedTelegramUserIds }}</span>
                   <textarea
                     v-model="telegramAllowedUserIdsDraft"
                     class="sidebar-settings-textarea"
@@ -311,7 +311,7 @@
                   />
                 </label>
                 <div class="sidebar-settings-field-help">
-                  Put one Telegram user ID per line or separate them with commas. Use `*` to allow all Telegram users. Unauthorized users will see their own ID in the rejection message so they can copy it here.
+                  {{ zhCN.settings.telegramHelp }}
                 </div>
                 <div v-if="telegramConfigError" class="sidebar-settings-telegram-error">
                   {{ telegramConfigError }}
@@ -323,7 +323,7 @@
                     :disabled="isTelegramSaving"
                     @click="saveTelegramConfig"
                   >
-                    {{ isTelegramSaving ? 'Saving…' : 'Save Telegram config' }}
+                    {{ isTelegramSaving ? zhCN.settings.saving : zhCN.settings.saveTelegramConfig }}
                   </button>
                 </div>
               </div>
@@ -333,7 +333,7 @@
                 :data-state="threadContextBadgeState"
                 :title="threadContextTooltip"
               >
-                <span class="sidebar-settings-label">Context</span>
+                <span class="sidebar-settings-label">{{ zhCN.settings.context }}</span>
                 <span class="sidebar-settings-context-value" :data-state="threadContextBadgeState">
                   {{ threadContextPrimaryText }}
                   <span class="sidebar-settings-context-meta">{{ threadContextSecondaryText }}</span>
@@ -342,7 +342,7 @@
               <div class="sidebar-settings-rate-limits">
                 <RateLimitStatus :snapshots="accountRateLimitSnapshots" />
               </div>
-              <div class="sidebar-settings-build-label" aria-label="Worktree name and version">
+              <div class="sidebar-settings-build-label" :aria-label="zhCN.settings.buildLabel">
                 WT {{ worktreeName }} · v{{ appVersion }}
               </div>
             </div>
@@ -354,7 +354,7 @@
             @click.stop="isSettingsOpen = !isSettingsOpen"
           >
             <IconTablerSettings class="sidebar-settings-icon" />
-            <span>Settings</span>
+            <span>{{ zhCN.common.settings }}</span>
             <span class="sidebar-settings-button-version">
               {{ worktreeName }} · v{{ appVersion }}
             </span>
@@ -385,7 +385,7 @@
               :options="contentHeaderBranchDropdownOptions"
               :disabled="isLoadingThreadBranches || isSwitchingThreadBranch"
               :enable-search="true"
-              search-placeholder="Search branches..."
+              :search-placeholder="zhCN.newThread.searchBranches"
               @update:model-value="onSelectContentHeaderBranch"
             />
           </template>
@@ -398,35 +398,35 @@
           <template v-else-if="isHomeRoute">
             <div class="content-grid content-grid-home">
               <div class="new-thread-empty">
-                <p class="new-thread-hero">Let's build</p>
+                <p class="new-thread-hero">{{ zhCN.newThread.title }}</p>
                 <ComposerDropdown class="new-thread-folder-dropdown" :model-value="newThreadCwd"
-                  :options="newThreadFolderOptions" placeholder="Choose folder"
+                  :options="newThreadFolderOptions" :placeholder="zhCN.newThread.chooseFolder"
                   :enable-search="true"
-                  search-placeholder="Quick search project"
+                  :search-placeholder="zhCN.newThread.quickSearchProject"
                   :show-add-action="true"
                   add-action-mode="event"
-                  add-action-label="+ Add new project"
+                  :add-action-label="zhCN.newThread.addNewProject"
                   :disabled="false" @update:model-value="onSelectNewThreadFolder"
                   @add-action="onStartAddNewProject" />
                 <p v-if="newThreadCwd" class="new-thread-folder-selected" :title="newThreadCwd">
-                  Selected folder: {{ newThreadCwd }}
+                  {{ zhCN.newThread.selectedFolder }}：{{ newThreadCwd }}
                 </p>
                 <div class="new-thread-folder-actions">
                   <button class="new-thread-folder-action new-thread-folder-action-primary" type="button" @click="onOpenExistingFolder">
-                    Select folder
+                    {{ zhCN.newThread.selectFolder }}
                   </button>
                 </div>
                 <div v-if="isExistingFolderPickerOpen" class="new-thread-open-folder">
                   <div class="new-thread-open-folder-header">
-                    <p class="new-thread-open-folder-title">Select folder</p>
+                    <p class="new-thread-open-folder-title">{{ zhCN.newThread.selectFolder }}</p>
                     <button class="new-thread-open-folder-close" type="button" @click="onCloseExistingFolderPanel">
-                      Cancel
+                      {{ zhCN.common.cancel }}
                     </button>
                   </div>
-                  <p class="new-thread-open-folder-label">Current folder</p>
+                  <p class="new-thread-open-folder-label">{{ zhCN.newThread.currentFolder }}</p>
                   <div class="new-thread-open-folder-current">
-                    <p class="new-thread-open-folder-path" :title="existingFolderBrowsePath || 'Unavailable'">
-                      {{ existingFolderBrowsePath || 'Unavailable' }}
+                    <p class="new-thread-open-folder-path" :title="existingFolderBrowsePath || zhCN.newThread.unavailablePath">
+                      {{ existingFolderBrowsePath || zhCN.newThread.unavailablePath }}
                     </p>
                     <button
                       class="new-thread-folder-action new-thread-folder-action-primary"
@@ -434,7 +434,7 @@
                       :disabled="!existingFolderBrowsePath || !!existingFolderError || isExistingFolderLoading || isOpeningExistingFolder"
                       @click="onConfirmExistingFolder()"
                     >
-                      {{ isOpeningExistingFolder ? 'Opening…' : 'Open' }}
+                      {{ isOpeningExistingFolder ? zhCN.common.opening : zhCN.common.open }}
                     </button>
                   </div>
                   <div class="new-thread-open-folder-actions">
@@ -445,7 +445,7 @@
                         type="checkbox"
                         @change="onToggleHiddenFolders"
                       />
-                      <span>Show hidden folders</span>
+                      <span>{{ zhCN.newThread.showHiddenFolders }}</span>
                     </label>
                     <button
                       class="new-thread-folder-action"
@@ -455,7 +455,7 @@
                       :disabled="!existingFolderBrowsePath || isExistingFolderLoading || isOpeningExistingFolder || isCreatingFolder || (!!existingFolderError && !isCreateFolderOpen)"
                       @click="onOpenCreateFolderPanel"
                     >
-                      New folder
+                      {{ zhCN.newThread.newFolder }}
                     </button>
                   </div>
                   <div v-if="isCreateFolderOpen" class="new-thread-open-folder-create">
@@ -465,7 +465,7 @@
                         v-model="createFolderDraft"
                         class="new-thread-open-folder-create-input"
                         type="text"
-                        placeholder="Folder name"
+                        :placeholder="zhCN.newThread.folderName"
                         @keydown.enter.prevent="onCreateFolder"
                         @keydown.esc.prevent="onCloseCreateFolderPanel"
                       />
@@ -484,7 +484,7 @@
                     v-model="existingFolderFilter"
                     class="new-thread-open-folder-filter"
                     type="text"
-                    placeholder="Filter folders..."
+                    :placeholder="zhCN.newThread.filterFolders"
                   />
                   <div v-if="existingFolderError" class="new-thread-open-folder-error-actions">
                     <p class="new-thread-open-folder-error">{{ existingFolderError }}</p>
@@ -494,12 +494,12 @@
                       :disabled="isExistingFolderLoading || isOpeningExistingFolder"
                       @click="onRetryExistingFolderBrowse"
                     >
-                      Retry
+                      {{ zhCN.common.retry }}
                     </button>
                   </div>
-                  <p v-if="isExistingFolderLoading" class="new-thread-open-folder-status">Loading folders…</p>
+                  <p v-if="isExistingFolderLoading" class="new-thread-open-folder-status">{{ zhCN.newThread.loadingFolders }}</p>
                   <p v-else-if="!existingFolderError && existingFolderFilteredEntries.length === 0" class="new-thread-open-folder-status">
-                    {{ existingFolderFilter.trim() ? 'No folders match this filter.' : 'No subfolders found here.' }}
+                    {{ existingFolderFilter.trim() ? zhCN.newThread.noFoldersMatch : zhCN.newThread.noSubfoldersFound }}
                   </p>
                   <ul v-else-if="existingFolderFilteredEntries.length > 0" class="new-thread-open-folder-list">
                     <li v-for="entry in existingFolderFilteredEntries" :key="entry.key" class="new-thread-open-folder-item">
@@ -519,7 +519,7 @@
                         :disabled="isExistingFolderLoading || isOpeningExistingFolder"
                         @click="onConfirmExistingFolder(entry.path)"
                       >
-                        Open
+                        {{ zhCN.common.open }}
                       </button>
                     </li>
                   </ul>
@@ -529,29 +529,29 @@
                   v-model="newThreadRuntime"
                 />
                 <div v-if="newThreadRuntime === 'worktree'" class="new-thread-branch-select">
-                  <p class="new-thread-branch-select-label">Base branch</p>
+                  <p class="new-thread-branch-select-label">{{ zhCN.newThread.baseBranch }}</p>
                   <ComposerDropdown
                     class="new-thread-branch-dropdown"
                     :model-value="newWorktreeBaseBranch"
                     :options="newWorktreeBranchDropdownOptions"
-                    placeholder="Select branch"
+                    :placeholder="zhCN.newThread.selectBranch"
                     :enable-search="true"
-                    search-placeholder="Search branches..."
+                    :search-placeholder="zhCN.newThread.searchBranches"
                     :disabled="isLoadingWorktreeBranches || newWorktreeBranchDropdownOptions.length === 0"
                     @update:model-value="onSelectNewWorktreeBranch"
                   />
                   <p class="new-thread-branch-select-help">
                     {{
                       isLoadingWorktreeBranches
-                        ? 'Loading branches…'
+                        ? zhCN.newThread.loadingBranches
                         : selectedWorktreeBranchLabel
-                          ? `New worktree branch will start from ${selectedWorktreeBranchLabel}.`
-                          : 'No Git branches found for this folder.'
+                          ? `新的 worktree 分支将从 ${selectedWorktreeBranchLabel} 开始。`
+                          : zhCN.newThread.noGitBranches
                     }}
                   </p>
                 </div>
                 <p class="new-thread-runtime-help">
-                  <code>Local project</code> uses the selected folder directly. <code>New worktree</code> creates an isolated Git worktree before the first prompt.
+                  <code>{{ zhCN.runtime.localProject }}</code> 会直接使用所选文件夹。<code>{{ zhCN.runtime.newWorktree }}</code> 会在首次提问前创建隔离的 Git 工作树。
                 </p>
                 <div
                   v-if="worktreeInitStatus.phase !== 'idle'"
@@ -566,7 +566,7 @@
                 </div>
                 <div v-if="showGithubTrendingProjects" class="new-thread-trending">
                   <div class="new-thread-trending-header">
-                    <p class="new-thread-trending-title">Trending GitHub projects</p>
+                    <p class="new-thread-trending-title">{{ zhCN.newThread.trendingGitHubProjects }}</p>
                     <ComposerDropdown
                       class="new-thread-trending-scope-dropdown"
                       :model-value="githubTipsScope"
@@ -574,9 +574,9 @@
                       @update:model-value="onGithubTipsScopeChange"
                     />
                   </div>
-                  <p v-if="isTrendingProjectsLoading" class="new-thread-trending-empty">Loading trending projects...</p>
+                  <p v-if="isTrendingProjectsLoading" class="new-thread-trending-empty">{{ zhCN.newThread.loadingTrendingProjects }}</p>
                   <p v-else-if="trendingProjects.length === 0" class="new-thread-trending-empty">
-                    Trending repos are unavailable right now.
+                    {{ zhCN.newThread.trendingUnavailable }}
                   </p>
                   <div v-else class="new-thread-trending-list">
                     <button
@@ -598,7 +598,7 @@
                       </span>
                       <span class="new-thread-trending-tip-meta">{{ formatTrendingTipMeta(project) }}</span>
                       <span class="new-thread-trending-tip-description">
-                        {{ project.description || 'No description available.' }}
+                        {{ project.description || zhCN.newThread.noDescription }}
                       </span>
                     </button>
                   </div>
@@ -744,6 +744,7 @@ import type { ComposerDraftPayload, ThreadComposerExposed } from './components/c
 import type { GithubTipsScope, GithubTrendingProject, LocalDirectoryEntry, TelegramStatus, WorktreeBranchOption } from './api/codexGateway'
 import { getFreeModeStatus, setFreeMode, setFreeModeCustomKey, setCustomProvider } from './api/codexGateway'
 import { getPathLeafName, getPathParent, normalizePathForUi } from './pathUtils.js'
+import { zhCN } from './copy/zhCN'
 
 const ThreadConversation = defineAsyncComponent(() => import('./components/content/ThreadConversation.vue'))
 const ReviewPane = defineAsyncComponent(() => import('./components/content/ReviewPane.vue'))
@@ -754,15 +755,15 @@ const ACCOUNTS_SECTION_COLLAPSED_STORAGE_KEY = 'codex-web-local.accounts-section
 const worktreeName = import.meta.env.VITE_WORKTREE_NAME ?? 'unknown'
 const appVersion = import.meta.env.VITE_APP_VERSION ?? 'unknown'
 const SETTINGS_HELP = {
-  sendWithEnter: 'When enabled, press Enter to send. When disabled, use Command+Enter to send.',
-  inProgressSendMode: 'If a turn is still running, choose whether a new prompt should steer the current turn or be queued.',
-  appearance: 'Switch between system theme, light mode, and dark mode.',
-  chatWidth: 'Choose how wide the conversation column and composer can grow on desktop screens.',
-  dictationClickToToggle: 'Use click-to-start and click-to-stop dictation instead of hold-to-talk.',
-  dictationAutoSend: 'Automatically send transcribed dictation when recording stops.',
+  sendWithEnter: '启用后按 Enter 发送；关闭后使用 Command+Enter 发送。',
+  inProgressSendMode: '当前轮次仍在运行时，选择新消息是接管当前轮次还是进入队列。',
+  appearance: '在跟随系统、浅色和深色模式之间切换。',
+  chatWidth: '选择桌面对话区和输入区的最大宽度。',
+  dictationClickToToggle: '使用点击开始、再次点击停止的听写方式，而不是按住说话。',
+  dictationAutoSend: '停止录音后自动发送转写结果。',
 
-  githubTrendingProjects: 'Show or hide GitHub trending project cards on the new thread screen.',
-  dictationLanguage: 'Choose transcription language or keep auto-detect.',
+  githubTrendingProjects: '显示或隐藏新线程页面中的 GitHub 热门项目卡片。',
+  dictationLanguage: '选择转写语言，或保持自动检测。',
 } as const
 
 type ChatWidthMode = 'standard' | 'wide' | 'extra-wide'
@@ -775,17 +776,17 @@ type ChatWidthPreset = {
 
 const CHAT_WIDTH_PRESETS: Record<ChatWidthMode, ChatWidthPreset> = {
   standard: {
-    label: 'Standard',
+    label: '标准',
     columnMax: '45rem',
     cardMax: '76ch',
   },
   wide: {
-    label: 'Wide',
+    label: '宽',
     columnMax: '72rem',
     cardMax: '88ch',
   },
   'extra-wide': {
-    label: 'Extra wide',
+    label: '超宽',
     columnMax: '96rem',
     cardMax: '96ch',
   },
@@ -983,7 +984,7 @@ const settingsPanelRef = ref<HTMLElement | null>(null)
 const settingsButtonRef = ref<HTMLElement | null>(null)
 const serverMatchedThreadIds = ref<string[] | null>(null)
 let threadSearchTimer: ReturnType<typeof setTimeout> | null = null
-const defaultNewProjectName = ref('New Project (1)')
+const defaultNewProjectName = ref('新项目 (1)')
 const homeDirectory = ref('')
 const isSettingsOpen = ref(false)
 const isAccountsSectionCollapsed = ref(loadAccountsSectionCollapsed())
@@ -1081,9 +1082,9 @@ const knownThreadIdSet = computed(() => {
 const isHomeRoute = computed(() => route.name === 'home')
 const isSkillsRoute = computed(() => route.name === 'skills')
 const contentTitle = computed(() => {
-  if (isSkillsRoute.value) return 'Skills'
-  if (isHomeRoute.value) return 'New thread'
-  return selectedThread.value?.title ?? 'Choose a thread'
+  if (isSkillsRoute.value) return zhCN.content.skills
+  if (isHomeRoute.value) return zhCN.content.newThread
+  return selectedThread.value?.title ?? zhCN.content.chooseThread
 })
 const browserHostName =
   typeof window !== 'undefined'
@@ -1139,19 +1140,19 @@ function formatCompactTokenCount(value: number): string {
 
 function buildThreadContextTooltip(usage: UiThreadTokenUsage | null): string {
   if (!usage) {
-    return 'Waiting for Codex thread/tokenUsage/updated events for this thread.'
+    return zhCN.context.waitingUsage
   }
 
   const lines = [
-    `Current context usage: ${usage.currentContextTokens.toLocaleString()} tokens`,
-    `Cumulative thread usage: ${usage.total.totalTokens.toLocaleString()} tokens`,
+    zhCN.context.currentUsage(usage.currentContextTokens.toLocaleString()),
+    zhCN.context.cumulativeUsage(usage.total.totalTokens.toLocaleString()),
   ]
 
   if (typeof usage.modelContextWindow === 'number') {
-    lines.unshift(`Model context window: ${usage.modelContextWindow.toLocaleString()} tokens`)
-    lines.push(`Remaining context: ${(usage.remainingContextTokens ?? 0).toLocaleString()} tokens`)
+    lines.unshift(zhCN.context.modelWindow(usage.modelContextWindow.toLocaleString()))
+    lines.push(zhCN.context.remainingContext((usage.remainingContextTokens ?? 0).toLocaleString()))
   } else {
-    lines.push('Model context window is unavailable in the latest usage event.')
+    lines.push(zhCN.context.modelWindowUnavailable)
   }
 
   return lines.join('\n')
@@ -1167,20 +1168,20 @@ const threadContextBadgeState = computed(() => {
 
 const threadContextPrimaryText = computed(() => {
   const usage = selectedThreadTokenUsage.value
-  if (!usage) return 'Awaiting data'
+  if (!usage) return zhCN.context.awaitingData
   if (typeof usage.remainingContextTokens === 'number') {
-    return `${formatCompactTokenCount(usage.remainingContextTokens)} left`
+    return zhCN.context.left(formatCompactTokenCount(usage.remainingContextTokens))
   }
-  return `${formatCompactTokenCount(usage.currentContextTokens)} used`
+  return zhCN.context.used(formatCompactTokenCount(usage.currentContextTokens))
 })
 
 const threadContextSecondaryText = computed(() => {
   const usage = selectedThreadTokenUsage.value
-  if (!usage) return 'Updates after the next token usage event'
+  if (!usage) return zhCN.context.updatesAfterNextEvent
   if (typeof usage.modelContextWindow === 'number') {
     return `${formatCompactTokenCount(usage.currentContextTokens)} used / ${formatCompactTokenCount(usage.modelContextWindow)}`
   }
-  return 'Window size unavailable'
+  return zhCN.context.windowUnavailable
 })
 
 const threadContextTooltip = computed(() => buildThreadContextTooltip(selectedThreadTokenUsage.value))
@@ -1237,7 +1238,7 @@ const contentHeaderBranchDropdownOptions = computed<Array<{ value: string; label
   const options: Array<{ value: string; label: string }> = [
     {
       value: '__review__',
-      label: isReviewPaneOpen.value ? 'Review (Open)' : 'Review',
+      label: isReviewPaneOpen.value ? zhCN.review.open : zhCN.review.closed,
     },
   ]
   const seen = new Set<string>()
@@ -1246,7 +1247,7 @@ const contentHeaderBranchDropdownOptions = computed<Array<{ value: string; label
     options.push({ value: currentBranch, label: currentBranch })
     seen.add(currentBranch)
   } else {
-    options.push({ value: '__detached_head__', label: 'Detached HEAD' })
+    options.push({ value: '__detached_head__', label: zhCN.review.detachedHead })
     seen.add('__detached_head__')
   }
   for (const option of threadBranchOptions.value) {
@@ -1267,8 +1268,8 @@ const canCreateFolder = computed(() => {
   return isCreateFolderNameValid.value && createFolderParentPath.value.trim().length > 0 && !existingFolderError.value
 })
 const createFolderSubmitLabel = computed(() => {
-  if (isCreatingFolder.value) return 'Creating…'
-  return 'Create'
+  if (isCreatingFolder.value) return zhCN.common.creating
+  return zhCN.common.create
 })
 const canBrowseExistingFolderParent = computed(() => {
   const current = existingFolderBrowsePath.value.trim()
@@ -1304,12 +1305,12 @@ const existingFolderFilteredEntries = computed(() => {
 })
 const darkModeMediaQuery = typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)') : null
 const githubTipsScopeOptions = computed<Array<{ value: GithubTipsScope; label: string }>>(() => [
-  { value: 'search-daily', label: 'Search daily' },
-  { value: 'search-weekly', label: 'Search weekly' },
-  { value: 'search-monthly', label: 'Search monthly' },
-  { value: 'trending-daily', label: 'Trending daily' },
-  { value: 'trending-weekly', label: 'Trending weekly' },
-  { value: 'trending-monthly', label: 'Trending monthly' },
+  { value: 'search-daily', label: '搜索 - 今日' },
+  { value: 'search-weekly', label: '搜索 - 本周' },
+  { value: 'search-monthly', label: '搜索 - 本月' },
+  { value: 'trending-daily', label: 'Trending - 今日' },
+  { value: 'trending-weekly', label: 'Trending - 本周' },
+  { value: 'trending-monthly', label: 'Trending - 本月' },
 ])
 const chatWidthLabel = computed(() => CHAT_WIDTH_PRESETS[chatWidth.value].label)
 const contentStyle = computed(() => {
@@ -1320,13 +1321,13 @@ const contentStyle = computed(() => {
   }
 })
 const telegramStatusText = computed(() => {
-  if (!telegramStatus.value.configured) return 'Not configured'
-  const base = telegramStatus.value.active ? 'Online' : 'Configured (offline)'
+  if (!telegramStatus.value.configured) return zhCN.telegram.notConfigured
+  const base = telegramStatus.value.active ? zhCN.telegram.online : zhCN.telegram.configuredOffline
   const allowlist = telegramStatus.value.allowAllUsers
-    ? 'allow all users'
-    : `${telegramStatus.value.allowedUsers} allowed user(s)`
-  const mapped = `${telegramStatus.value.mappedChats} chat(s), ${telegramStatus.value.mappedThreads} thread(s), ${allowlist}`
-  const error = telegramStatus.value.lastError ? `, error: ${telegramStatus.value.lastError}` : ''
+    ? zhCN.telegram.allowAllUsers
+    : zhCN.telegram.allowedUsers(telegramStatus.value.allowedUsers)
+  const mapped = zhCN.telegram.mapped(telegramStatus.value.mappedChats, telegramStatus.value.mappedThreads, allowlist)
+  const error = telegramStatus.value.lastError ? zhCN.telegram.errorPrefix(telegramStatus.value.lastError) : ''
   return `${base}, ${mapped}${error}`
 })
 
@@ -1420,7 +1421,7 @@ async function refreshTelegramStatus(): Promise<void> {
   try {
     telegramStatus.value = await getTelegramStatus()
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Failed to load Telegram status'
+    const message = error instanceof Error ? error.message : zhCN.telegram.loadStatusFailed
     telegramStatus.value = {
       configured: false,
       active: false,
@@ -1440,7 +1441,7 @@ async function refreshTelegramConfig(): Promise<void> {
     telegramAllowedUserIdsDraft.value = config.allowedUserIds.map((value) => String(value)).join('\n')
     telegramConfigError.value = ''
   } catch (error) {
-    telegramConfigError.value = error instanceof Error ? error.message : 'Failed to load Telegram configuration'
+    telegramConfigError.value = error instanceof Error ? error.message : zhCN.telegram.loadConfigFailed
   }
 }
 
@@ -1460,11 +1461,11 @@ async function saveTelegramConfig(): Promise<void> {
   const botToken = telegramBotTokenDraft.value.trim()
   const allowedUserIds = parseTelegramAllowedUserIdsInput(telegramAllowedUserIdsDraft.value)
   if (!botToken) {
-    telegramConfigError.value = 'Telegram bot token is required.'
+    telegramConfigError.value = zhCN.telegram.botTokenRequired
     return
   }
   if (allowedUserIds.length === 0) {
-    telegramConfigError.value = 'At least one allowed Telegram user ID or * is required.'
+    telegramConfigError.value = zhCN.telegram.allowedUsersRequired
     return
   }
 
@@ -1477,9 +1478,9 @@ async function saveTelegramConfig(): Promise<void> {
       refreshTelegramConfig(),
       refreshTelegramStatus(),
     ])
-    window.alert('Telegram bot configured. Only allowlisted Telegram users can use the bridge.')
+    window.alert(zhCN.telegram.configuredAlert)
   } catch (error) {
-    telegramConfigError.value = error instanceof Error ? error.message : 'Failed to connect Telegram bot'
+    telegramConfigError.value = error instanceof Error ? error.message : zhCN.telegram.connectFailed
     void refreshTelegramStatus()
   } finally {
     isTelegramSaving.value = false
@@ -1529,7 +1530,7 @@ function shortAccountId(accountId: string): string {
 }
 
 function formatAccountMeta(account: UiAccountEntry): string {
-  const segments = [account.planType || 'unknown']
+  const segments = [account.planType || '未知']
   if (account.authMode) {
     segments.unshift(account.authMode)
   }
@@ -1560,16 +1561,16 @@ function isRemoveVisible(account: UiAccountEntry): boolean {
 }
 
 function getAccountSwitchLabel(account: UiAccountEntry): string {
-  if (isAccountUnavailable(account)) return 'Unavailable'
-  if (account.isActive) return 'Active'
-  if (isSwitchingAccounts.value) return 'Switching…'
-  return 'Switch'
+  if (isAccountUnavailable(account)) return zhCN.account.unavailable
+  if (account.isActive) return zhCN.common.active
+  if (isSwitchingAccounts.value) return zhCN.common.switching
+  return zhCN.common.switch
 }
 
 function getAccountRemoveLabel(account: UiAccountEntry): string {
-  if (removingAccountId.value === account.accountId) return 'Removing…'
-  if (isRemoveConfirmationActive(account)) return 'Click again to remove'
-  return 'Remove'
+  if (removingAccountId.value === account.accountId) return zhCN.account.removing
+  if (isRemoveConfirmationActive(account)) return zhCN.account.removeConfirm
+  return zhCN.common.remove
 }
 
 function onAccountCardPointerEnter(accountId: string): void {
@@ -1621,34 +1622,34 @@ function formatAccountQuota(account: UiAccountEntry): string {
     const remainingPercent = Math.max(0, Math.min(100, 100 - Math.round(displayWindow.usedPercent)))
     const refreshDate = formatResetDateCompact(displayWindow.resetsAt)
     return refreshDate
-      ? `${remainingPercent}% weekly remaining · ${refreshDate}`
-      : `${remainingPercent}% weekly remaining`
+      ? `${remainingPercent}% ${zhCN.account.weeklyRemaining} · ${refreshDate}`
+      : `${remainingPercent}% ${zhCN.account.weeklyRemaining}`
   }
   if (quota?.credits?.unlimited) {
-    return 'Unlimited credits'
+    return zhCN.account.unlimitedCredits
   }
   if (quota?.credits?.hasCredits && quota.credits.balance) {
-    return `${quota.credits.balance} credits`
+    return `${quota.credits.balance} ${zhCN.account.creditsSuffix}`
   }
   if (account.quotaStatus === 'loading') {
-    return 'Loading quota…'
+    return zhCN.account.loadingQuota
   }
   if (account.quotaStatus === 'error') {
-    return account.quotaError || 'Quota unavailable'
+    return account.quotaError || zhCN.account.quotaUnavailable
   }
   if (account.quotaStatus === 'ready' || account.quotaStatus === 'idle') {
-    return 'Quota unavailable'
+    return zhCN.account.quotaUnavailable
   }
-  return 'Fetching account details…'
+  return zhCN.account.fetchingDetails
 }
 
 function buildAccountTitle(account: UiAccountEntry): string {
   return [
-    account.email || 'Account',
+    account.email || zhCN.common.account,
     formatAccountMeta(account),
-    isAccountUnavailable(account) ? 'Unavailable account' : null,
+    isAccountUnavailable(account) ? zhCN.account.unavailableAccount : null,
     formatAccountQuota(account),
-    `Workspace ${account.accountId}`,
+    `${zhCN.account.workspace} ${account.accountId}`,
   ].filter(Boolean).join('\n')
 }
 
@@ -1664,7 +1665,7 @@ async function loadAccountsState(options: { silent?: boolean } = {}): Promise<vo
     }
   } catch (error) {
     if (options.silent === true) return
-    accountActionError.value = error instanceof Error ? error.message : 'Failed to load accounts'
+    accountActionError.value = error instanceof Error ? error.message : zhCN.account.loadAccountsFailed
   }
 }
 
@@ -1683,7 +1684,7 @@ async function onRefreshAccounts(): Promise<void> {
       includeSelectedThreadMessages: true,
     })
   } catch (error) {
-    accountActionError.value = error instanceof Error ? error.message : 'Failed to refresh accounts'
+    accountActionError.value = error instanceof Error ? error.message : zhCN.account.refreshAccountsFailed
   } finally {
     isRefreshingAccounts.value = false
   }
@@ -1692,7 +1693,7 @@ async function onRefreshAccounts(): Promise<void> {
 async function onSwitchAccount(accountId: string): Promise<void> {
   if (isSwitchingAccounts.value || isRefreshingAccounts.value) return
   if (isAccountSwitchBlocked.value) {
-    accountActionError.value = 'Finish the current turn and pending requests before switching accounts.'
+    accountActionError.value = zhCN.account.finishTurnBeforeSwitch
     return
   }
   accountActionError.value = ''
@@ -1713,7 +1714,7 @@ async function onSwitchAccount(accountId: string): Promise<void> {
     })
     void loadAccountsState({ silent: true })
   } catch (error) {
-    accountActionError.value = error instanceof Error ? error.message : 'Failed to switch account'
+    accountActionError.value = error instanceof Error ? error.message : zhCN.account.switchAccountFailed
   } finally {
     isSwitchingAccounts.value = false
   }
@@ -1728,7 +1729,7 @@ async function onRemoveAccount(accountId: string): Promise<void> {
     return
   }
   if (targetAccount.isActive && isAccountSwitchBlocked.value) {
-    accountActionError.value = 'Finish the current turn and pending requests before removing the active account.'
+    accountActionError.value = zhCN.account.finishTurnBeforeRemove
     return
   }
 
@@ -1748,7 +1749,7 @@ async function onRemoveAccount(accountId: string): Promise<void> {
     }
     void loadAccountsState({ silent: true })
   } catch (error) {
-    accountActionError.value = error instanceof Error ? error.message : 'Failed to remove account'
+    accountActionError.value = error instanceof Error ? error.message : zhCN.account.removeAccountFailed
   } finally {
     removingAccountId.value = ''
   }
@@ -2102,7 +2103,7 @@ function onSelectContentHeaderBranch(value: string): void {
       return loadThreadBranches(cwd)
     })
     .catch((error: unknown) => {
-      const message = error instanceof Error ? error.message : 'Failed to switch branch'
+      const message = error instanceof Error ? error.message : '切换分支失败'
       window.alert(message)
     })
     .finally(() => {
@@ -2170,7 +2171,7 @@ async function onConfirmExistingFolder(path = existingFolderBrowsePath.value): P
       label: '',
     })
     if (!normalizedPath) {
-      existingFolderError.value = 'Failed to open the selected folder.'
+      existingFolderError.value = '打开所选文件夹失败。'
       return
     }
 
@@ -2180,7 +2181,7 @@ async function onConfirmExistingFolder(path = existingFolderBrowsePath.value): P
     await refreshDefaultProjectName()
     onCloseExistingFolderPanel()
   } catch (error) {
-    existingFolderError.value = error instanceof Error ? error.message : 'Failed to open the selected folder.'
+    existingFolderError.value = error instanceof Error ? error.message : '打开所选文件夹失败。'
   } finally {
     isOpeningExistingFolder.value = false
   }
@@ -2218,7 +2219,7 @@ async function onCreateFolder(): Promise<void> {
 
   createFolderError.value = ''
   if (existingFolderError.value) {
-    createFolderError.value = 'Reload the current folder before creating a new one.'
+    createFolderError.value = '请先重新加载当前文件夹，再创建新文件夹。'
     return
   }
   isCreatingFolder.value = true
@@ -2227,13 +2228,13 @@ async function onCreateFolder(): Promise<void> {
   const targetPath = normalizeAbsolutePath(joinPath(baseDir, normalizedInput))
 
   if (!targetPath) {
-    createFolderError.value = 'Unable to determine where the new folder should be created.'
+    createFolderError.value = '无法确定新文件夹应创建到哪里。'
     isCreatingFolder.value = false
     return
   }
 
   if (!isCreateFolderNameValid.value) {
-    createFolderError.value = 'Enter a single folder name.'
+    createFolderError.value = '请输入单个文件夹名称。'
     isCreatingFolder.value = false
     return
   }
@@ -2241,7 +2242,7 @@ async function onCreateFolder(): Promise<void> {
   try {
     const normalizedPath = await createLocalDirectory(targetPath)
     if (!normalizedPath) {
-      createFolderError.value = 'Failed to create the folder.'
+      createFolderError.value = '创建文件夹失败。'
       return
     }
 
@@ -2250,7 +2251,7 @@ async function onCreateFolder(): Promise<void> {
     await loadExistingFolderListing(normalizedPath)
     onCloseCreateFolderPanel()
   } catch (error) {
-    createFolderError.value = error instanceof Error ? error.message : 'Failed to create folder.'
+    createFolderError.value = error instanceof Error ? error.message : '创建文件夹失败。'
   } finally {
     isCreatingFolder.value = false
   }
@@ -2298,15 +2299,15 @@ async function resolveProjectBaseDirectory(): Promise<string> {
 async function refreshDefaultProjectName(): Promise<void> {
   const baseDir = getProjectBaseDirectory()
   if (!baseDir) {
-    defaultNewProjectName.value = 'New Project (1)'
+    defaultNewProjectName.value = '新项目 (1)'
     return
   }
 
   try {
     const suggestion = await getProjectRootSuggestion(baseDir)
-    defaultNewProjectName.value = suggestion.name || 'New Project (1)'
+    defaultNewProjectName.value = suggestion.name || '新项目 (1)'
   } catch {
-    defaultNewProjectName.value = 'New Project (1)'
+    defaultNewProjectName.value = '新项目 (1)'
   }
 }
 
@@ -2352,7 +2353,7 @@ async function loadExistingFolderListing(path: string): Promise<void> {
     existingFolderEntries.value = listing.entries
   } catch (error) {
     if (requestId !== existingFolderBrowseRequestId) return
-    existingFolderError.value = error instanceof Error ? error.message : 'Failed to load local folders.'
+    existingFolderError.value = error instanceof Error ? error.message : '加载本地文件夹失败。'
     existingFolderParentPath.value = getPathParent(existingFolderBrowsePath.value)
     existingFolderEntries.value = []
     onCloseCreateFolderPanel()
@@ -2486,17 +2487,23 @@ function onExportChat(): void {
 
 function buildThreadMarkdown(): string {
   const lines: string[] = []
-  const threadTitle = selectedThread.value?.title?.trim() || 'Untitled thread'
+  const threadTitle = selectedThread.value?.title?.trim() || zhCN.common.untitledThread
   lines.push(`# ${escapeMarkdownText(threadTitle)}`)
   lines.push('')
-  lines.push(`- Exported: ${new Date().toISOString()}`)
-  lines.push(`- Thread ID: ${selectedThread.value?.id ?? ''}`)
+  lines.push(`- ${zhCN.common.exportedAt}: ${new Date().toISOString()}`)
+  lines.push(`- ${zhCN.common.threadId}: ${selectedThread.value?.id ?? ''}`)
   lines.push('')
   lines.push('---')
   lines.push('')
 
   for (const message of filteredMessages.value) {
-    const roleLabel = message.role ? message.role.toUpperCase() : 'MESSAGE'
+    const roleLabel = message.role === 'assistant'
+      ? '助手'
+      : message.role === 'user'
+        ? '用户'
+        : message.role === 'system'
+          ? '系统'
+          : '消息'
     lines.push(`## ${roleLabel}`)
     lines.push('')
 
@@ -2508,21 +2515,21 @@ function buildThreadMarkdown(): string {
 
     if (message.commandExecution) {
       lines.push('```text')
-      lines.push(`command: ${message.commandExecution.command}`)
-      lines.push(`status: ${message.commandExecution.status}`)
+      lines.push(`命令: ${message.commandExecution.command}`)
+      lines.push(`状态: ${message.commandExecution.status}`)
       if (message.commandExecution.cwd) {
-        lines.push(`cwd: ${message.commandExecution.cwd}`)
+        lines.push(`工作目录: ${message.commandExecution.cwd}`)
       }
       if (message.commandExecution.exitCode !== null) {
-        lines.push(`exitCode: ${message.commandExecution.exitCode}`)
+        lines.push(`退出码: ${message.commandExecution.exitCode}`)
       }
-      lines.push(message.commandExecution.aggregatedOutput || '(no output)')
+      lines.push(message.commandExecution.aggregatedOutput || zhCN.common.noOutput)
       lines.push('```')
       lines.push('')
     }
 
     if (message.fileAttachments && message.fileAttachments.length > 0) {
-      lines.push('Attachments:')
+      lines.push(`${zhCN.common.attachments}:`)
       for (const attachment of message.fileAttachments) {
         lines.push(`- ${attachment.path}`)
       }
@@ -2530,7 +2537,7 @@ function buildThreadMarkdown(): string {
     }
 
     if (message.images && message.images.length > 0) {
-      lines.push('Images:')
+      lines.push(`${zhCN.common.images}:`)
       for (const imageUrl of message.images) {
         lines.push(`- ${imageUrl}`)
       }
@@ -2542,12 +2549,12 @@ function buildThreadMarkdown(): string {
 }
 
 function buildExportFileName(): string {
-  const threadTitle = selectedThread.value?.title?.trim() || 'chat'
+  const threadTitle = selectedThread.value?.title?.trim() || zhCN.common.chatRecord
   const sanitized = threadTitle
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
-  const base = sanitized || 'chat'
+  const base = sanitized || zhCN.common.chatRecord
   const stamp = new Date().toISOString().replace(/[:.]/g, '-')
   return `${base}-${stamp}.md`
 }
@@ -2729,7 +2736,7 @@ function loadDictationLanguagePref(): string {
 }
 
 function buildDictationLanguageOptions(): Array<{ value: string; label: string }> {
-  const options: Array<{ value: string; label: string }> = [{ value: 'auto', label: 'Auto-detect' }]
+  const options: Array<{ value: string; label: string }> = [{ value: 'auto', label: zhCN.dictation.autoDetect }]
   const seen = new Set<string>(['auto'])
   function formatLanguageLabel(value: string): string {
     const languageName = WHISPER_LANGUAGES[value] || value
@@ -2743,7 +2750,7 @@ function buildDictationLanguageOptions(): Array<{ value: string; label: string }
     seen.add(value)
     options.push({
       value,
-      label: `Preferred: ${formatLanguageLabel(value)}`,
+      label: zhCN.actions.preferredLanguage(formatLanguageLabel(value)),
     })
   }
 
@@ -3069,8 +3076,8 @@ async function submitFirstMessageForNewThread(
       } catch {
         worktreeInitStatus.value = {
           phase: 'error',
-          title: 'Worktree setup failed',
-          message: 'Unable to create worktree. Try again or switch to Local project.',
+          title: '工作树初始化失败',
+          message: '无法创建工作树。请重试，或切换为本地项目。',
         }
         return
       }

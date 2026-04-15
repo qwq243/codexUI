@@ -18,7 +18,7 @@
         v-if="!isSidebarCollapsed"
         class="desktop-resize-handle"
         type="button"
-        aria-label="Resize sidebar"
+        aria-label="调整侧边栏宽度"
         @mousedown="onResizeHandleMouseDown"
       />
     </template>

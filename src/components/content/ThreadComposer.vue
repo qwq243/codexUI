@@ -13,11 +13,11 @@
     >
       <div v-if="selectedImages.length > 0" class="thread-composer-attachments">
         <div v-for="image in selectedImages" :key="image.id" class="thread-composer-attachment">
-          <img class="thread-composer-attachment-image" :src="image.url" :alt="image.name || 'Selected image'" />
+          <img class="thread-composer-attachment-image" :src="image.url" :alt="image.name || zhCN.composer.selectedImage" />
           <button
             class="thread-composer-attachment-remove"
             type="button"
-            :aria-label="`Remove ${image.name || 'image'}`"
+            :aria-label="zhCN.composer.remove(image.name || zhCN.composer.image)"
             :disabled="isInteractionDisabled"
             @click="removeImage(image.id)"
           >
@@ -32,16 +32,16 @@
           <span class="thread-composer-folder-chip-name" :title="group.name">{{ group.name }}</span>
           <span class="thread-composer-folder-chip-meta">
             <template v-if="group.isUploading">
-              {{ getFolderUploadPercent(group) }}% uploading ({{ group.processed }}/{{ group.total }})
+              {{ zhCN.composer.uploadingProgress(getFolderUploadPercent(group), group.processed, group.total) }}
             </template>
             <template v-else>
-              {{ group.filePaths.length }} file{{ group.filePaths.length === 1 ? '' : 's' }}
+              {{ zhCN.composer.folderFileCount(group.filePaths.length) }}
             </template>
           </span>
           <button
             class="thread-composer-folder-chip-remove"
             type="button"
-            :aria-label="`Remove folder ${group.name}`"
+            :aria-label="zhCN.composer.removeFolder(group.name)"
             :disabled="isInteractionDisabled"
             @click="removeFolderAttachment(group.id)"
           >×</button>
@@ -55,7 +55,7 @@
           <button
             class="thread-composer-file-chip-remove"
             type="button"
-            :aria-label="`Remove ${att.label}`"
+            :aria-label="zhCN.composer.remove(att.label)"
             :disabled="isInteractionDisabled"
             @click="removeFileAttachment(att.fsPath)"
           >×</button>
@@ -68,7 +68,7 @@
           <button
             class="thread-composer-skill-chip-remove"
             type="button"
-            :aria-label="`Remove skill ${skill.name}`"
+            :aria-label="zhCN.composer.removeSkill(skill.name)"
             @click="removeSkill(skill.path)"
           >×</button>
         </span>
@@ -83,7 +83,7 @@
         @drop="onInputDrop"
       >
         <div v-if="isDragActive" class="thread-composer-drop-overlay" aria-hidden="true">
-          <span class="thread-composer-drop-overlay-copy">Drop images or files</span>
+          <span class="thread-composer-drop-overlay-copy">{{ zhCN.composer.dropImagesOrFiles }}</span>
         </div>
         <div v-if="isFileMentionOpen" class="thread-composer-file-mentions">
           <template v-if="fileMentionSuggestions.length > 0">
@@ -110,7 +110,7 @@
               </span>
             </button>
           </template>
-          <div v-else class="thread-composer-file-mention-empty">No matching files</div>
+          <div v-else class="thread-composer-file-mention-empty">{{ zhCN.composer.noMatchingFiles }}</div>
         </div>
         <textarea
           ref="inputRef"
@@ -140,7 +140,7 @@
           <button
             class="thread-composer-attach-trigger"
             type="button"
-            aria-label="Add photos & files"
+            :aria-label="zhCN.composer.addPhotosAndFiles"
             :disabled="isInteractionDisabled"
             @click="toggleAttachMenu"
           >
@@ -154,7 +154,7 @@
               :disabled="isInteractionDisabled"
               @click="triggerPhotoLibrary"
             >
-              Add photos & files
+              {{ zhCN.composer.addPhotosAndFiles }}
             </button>
             <button
               class="thread-composer-attach-item"
@@ -162,7 +162,7 @@
               :disabled="isInteractionDisabled"
               @click="triggerFolderPicker"
             >
-              Add folder
+              {{ zhCN.composer.addFolder }}
             </button>
             <button
               class="thread-composer-attach-item"
@@ -170,11 +170,11 @@
               :disabled="isInteractionDisabled"
               @click="triggerCameraCapture"
             >
-              Take photo
+              {{ zhCN.composer.takePhoto }}
             </button>
             <div class="thread-composer-attach-separator" />
             <div class="thread-composer-attach-mode">
-              <span class="thread-composer-attach-mode-label">In-progress send</span>
+              <span class="thread-composer-attach-mode-label">{{ zhCN.composer.inProgressSend }}</span>
               <div class="thread-composer-attach-mode-buttons">
                 <button
                   class="thread-composer-attach-mode-button"
@@ -183,7 +183,7 @@
                   :disabled="isInteractionDisabled"
                   @click="setActiveInProgressMode('steer')"
                 >
-                  Steer
+                  {{ zhCN.composer.steer }}
                 </button>
                 <button
                   class="thread-composer-attach-mode-button"
@@ -192,7 +192,7 @@
                   :disabled="isInteractionDisabled"
                   @click="setActiveInProgressMode('queue')"
                 >
-                  Queue
+                  {{ zhCN.composer.queue }}
                 </button>
               </div>
             </div>
@@ -203,12 +203,12 @@
               type="button"
               role="switch"
               :aria-checked="selectedSpeedMode === 'fast'"
-              :aria-label="`Fast mode ${selectedSpeedMode === 'fast' ? 'enabled' : 'disabled'}`"
+              :aria-label="selectedSpeedMode === 'fast' ? zhCN.composer.fastModeEnabled : zhCN.composer.fastModeDisabled"
               :disabled="isSpeedToggleDisabled"
               @click="onToggleSpeedMode"
             >
               <span class="thread-composer-attach-setting-copy">
-                <span class="thread-composer-attach-setting-label">Fast mode</span>
+                <span class="thread-composer-attach-setting-label">{{ zhCN.composer.fastMode }}</span>
                 <span class="thread-composer-attach-setting-description">{{ speedModeDescription }}</span>
               </span>
               <span
@@ -225,13 +225,13 @@
               type="button"
               role="switch"
               :aria-checked="isPlanModeSelected"
-              :aria-label="isPlanModeSelected ? 'Disable plan mode' : 'Enable plan mode'"
+              :aria-label="isPlanModeSelected ? '关闭 Plan 模式' : '开启 Plan 模式'"
               :disabled="disabled || !activeThreadId || isTurnInProgress"
               @click="toggleCollaborationMode"
             >
               <span class="thread-composer-attach-setting-copy">
-                <span class="thread-composer-attach-setting-label">Plan mode</span>
-                <span class="thread-composer-attach-setting-description">Agent proposes a plan before acting</span>
+                <span class="thread-composer-attach-setting-label">{{ zhCN.composer.planMode }}</span>
+                <span class="thread-composer-attach-setting-description">{{ zhCN.composer.planModeDescription }}</span>
               </span>
               <span
                 class="thread-composer-attach-switch"
@@ -247,7 +247,7 @@
             :model-value="selectedModel"
             :options="modelOptions"
             :selected-prefix-icon="showFastModeModelIcon ? IconTablerBolt : null"
-            placeholder="Model"
+            :placeholder="zhCN.composer.model"
             open-direction="up"
             :disabled="disabled || !activeThreadId || models.length === 0 || isTurnInProgress"
             @update:model-value="onModelSelect"
@@ -257,8 +257,8 @@
             class="thread-composer-control"
             :options="skillDropdownOptions"
             :selected-values="selectedSkillPaths"
-            placeholder="Skills"
-            search-placeholder="Search skills..."
+            :placeholder="zhCN.composer.skills"
+            :search-placeholder="zhCN.dropdown.searchSkills"
             open-direction="up"
             :disabled="disabled || !activeThreadId || isTurnInProgress"
             @toggle="onSkillDropdownToggle"
@@ -268,7 +268,7 @@
             class="thread-composer-control"
             :model-value="selectedReasoningEffort"
             :options="reasoningOptions"
-            placeholder="Thinking"
+            :placeholder="zhCN.composer.thinking"
             open-direction="up"
             :disabled="disabled || !activeThreadId || isTurnInProgress"
             @update:model-value="onReasoningEffortSelect"
@@ -313,8 +313,8 @@
             v-if="isTurnInProgress && !hasSubmitContent"
             class="thread-composer-stop"
             type="button"
-            :aria-label="isStopPending ? 'Saving thread before stop is available' : 'Stop'"
-            :title="isStopPending ? 'Saving thread before stop is available' : 'Stop'"
+            :aria-label="isStopPending ? zhCN.composer.stopUnavailableWhileSaving : zhCN.composer.stop"
+            :title="isStopPending ? zhCN.composer.stopUnavailableWhileSaving : zhCN.composer.stop"
             :disabled="disabled || !activeThreadId || isInterruptingTurn || isStopPending"
             @click="onInterrupt"
           >
@@ -326,8 +326,8 @@
             class="thread-composer-submit"
             :class="{ 'thread-composer-submit--queue': isTurnInProgress && activeInProgressMode === 'queue' }"
             type="button"
-            :aria-label="isTurnInProgress && activeInProgressMode === 'queue' ? 'Queue message' : 'Send message'"
-            :title="isTurnInProgress ? `Send as ${activeInProgressMode}` : 'Send'"
+            :aria-label="isTurnInProgress && activeInProgressMode === 'queue' ? zhCN.composer.queueMessage : zhCN.composer.sendMessage"
+            :title="isTurnInProgress ? zhCN.composer.sendAs(activeInProgressMode) : zhCN.composer.send"
             :disabled="!canSubmit"
             @click="onSubmit(isTurnInProgress ? activeInProgressMode : 'steer')"
           >
@@ -382,6 +382,7 @@ import type {
 import { useDictation } from '../../composables/useDictation'
 import { useMobile } from '../../composables/useMobile'
 import { searchComposerFiles, uploadFile, type ComposerFileSuggestion } from '../../api/codexGateway'
+import { zhCN } from '../../copy/zhCN'
 import IconTablerArrowUp from '../icons/IconTablerArrowUp.vue'
 import IconTablerBolt from '../icons/IconTablerBolt.vue'
 import IconTablerFilePencil from '../icons/IconTablerFilePencil.vue'
@@ -508,15 +509,15 @@ const {
   },
   onEmpty: () => {
     dictationFeedback.value = props.dictationClickToToggle
-      ? 'No speech detected. Click again after speaking.'
-      : 'No speech detected. Hold the mic and speak.'
+      ? zhCN.composer.noSpeechClickAgain
+      : zhCN.composer.noSpeechHoldAndSpeak
   },
   onError: (error) => {
     if (error instanceof DOMException && error.name === 'NotAllowedError') {
-      dictationFeedback.value = 'Microphone access was denied.'
+      dictationFeedback.value = zhCN.composer.microphoneDenied
       return
     }
-    dictationFeedback.value = error instanceof Error ? error.message : 'Dictation failed.'
+    dictationFeedback.value = error instanceof Error ? error.message : zhCN.composer.dictationFailed
   },
 })
 const attachMenuRootRef = ref<HTMLElement | null>(null)
@@ -543,12 +544,12 @@ const DRAFT_STORAGE_PREFIX = 'codex-web-local.thread-draft.v1.'
 let lastActiveThreadId = ''
 
 const reasoningOptions: Array<{ value: ReasoningEffort; label: string }> = [
-  { value: 'none', label: 'None' },
-  { value: 'minimal', label: 'Minimal' },
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-  { value: 'xhigh', label: 'Extra high' },
+  { value: 'none', label: '无' },
+  { value: 'minimal', label: '极低' },
+  { value: 'low', label: '低' },
+  { value: 'medium', label: '中' },
+  { value: 'high', label: '高' },
+  { value: 'xhigh', label: '极高' },
 ]
 function formatModelLabel(modelId: string): string {
   return modelId.trim().replace(/^gpt/i, 'GPT')
@@ -605,11 +606,11 @@ const isSpeedToggleDisabled = computed(() =>
 )
 const speedModeDescription = computed(() => {
   if (props.isUpdatingSpeedMode) {
-    return 'Saving speed setting...'
+    return zhCN.composer.savingSpeedSetting
   }
   return props.selectedSpeedMode === 'fast'
-    ? 'About 1.5x faster, with credits used at 2x'
-    : 'Default speed with normal credit usage'
+    ? zhCN.composer.fasterSpeed
+    : zhCN.composer.defaultSpeed
 })
 const inProgressMode = computed<'steer' | 'queue'>(() =>
   props.inProgressSubmitMode === 'steer' ? 'steer' : 'queue',
@@ -617,8 +618,8 @@ const inProgressMode = computed<'steer' | 'queue'>(() =>
 const activeInProgressMode = ref<'steer' | 'queue'>(inProgressMode.value)
 const isDictationRecording = computed(() => dictationState.value === 'recording')
 const dictationButtonLabel = computed(() => {
-  if (dictationState.value === 'recording') return 'Stop dictation'
-  return props.dictationClickToToggle ? 'Click to dictate' : 'Hold to dictate'
+  if (dictationState.value === 'recording') return zhCN.composer.stopDictation
+  return props.dictationClickToToggle ? zhCN.composer.clickToDictate : zhCN.composer.holdToDictate
 })
 const dictationErrorText = computed(() =>
   dictationState.value === 'idle' ? dictationFeedback.value.trim() : '',
@@ -630,21 +631,19 @@ const attachmentFeedbackText = computed(() => {
     const remaining = Math.max(0, stats.total - completed)
     if (remaining > 0) {
       if (stats.failed > 0) {
-        return `${stats.failed} failed, attaching ${formatAttachmentFileCount(remaining)}...`
+        return zhCN.composer.attachFailedProgress(stats.failed, formatAttachmentFileCount(remaining))
       }
-      return remaining === 1 ? 'Attaching file...' : `Attaching ${remaining} files...`
+      return zhCN.composer.attachingProgress(remaining)
     }
     if (stats.failed > 0) {
       if (stats.succeeded > 0) {
-        return `${stats.succeeded} attached, ${stats.failed} failed.`
+        return zhCN.composer.attachedAndFailed(stats.succeeded, stats.failed)
       }
-      return stats.failed === 1 ? 'Could not attach file.' : `Could not attach ${stats.failed} files.`
+      return zhCN.composer.couldNotAttach(stats.failed)
     }
   }
   if (pendingAttachmentCount.value <= 0) return ''
-  return pendingAttachmentCount.value === 1
-    ? 'Attaching file...'
-    : `Attaching ${pendingAttachmentCount.value} files...`
+  return zhCN.composer.attachingProgress(pendingAttachmentCount.value)
 })
 const dictationDurationLabel = computed(() => {
   const totalSeconds = Math.max(0, Math.floor(recordingDurationMs.value / 1000))
@@ -655,10 +654,10 @@ const dictationDurationLabel = computed(() => {
 
 const placeholderText = computed(() =>
   !props.activeThreadId
-    ? 'Select a thread to send a message'
+    ? zhCN.composer.selectThreadToSend
     : isPlanModeWaitingForModel.value
-      ? 'Loading models for plan mode...'
-      : 'Type a message... (@ for files, / for skills)',
+      ? zhCN.composer.loadingModelsForPlanMode
+      : zhCN.composer.typeMessage,
 )
 const hasSubmitContent = computed(() =>
   draft.value.trim().length > 0 || selectedImages.value.length > 0 || fileAttachments.value.length > 0,
@@ -674,7 +673,7 @@ const contextUsageTone = computed(() => contextUsageView.value?.tone ?? 'healthy
 
 function formatPlanType(planType: string | null | undefined): string {
   if (!planType || planType === 'unknown') return ''
-  if (planType === 'edu') return 'Education'
+  if (planType === 'edu') return zhCN.composer.planEducation
   return `${planType.slice(0, 1).toUpperCase()}${planType.slice(1)}`
 }
 
@@ -689,16 +688,16 @@ function formatResetTime(resetsAt: number | null): string {
   if (typeof resetsAt !== 'number' || !Number.isFinite(resetsAt)) return ''
   const resetMs = resetsAt * 1000
   const diffMs = resetMs - Date.now()
-  if (diffMs <= 0) return 'resetting now'
+  if (diffMs <= 0) return zhCN.composer.resettingNow
 
   const totalMinutes = Math.round(diffMs / 60000)
-  if (totalMinutes < 60) return `resets in ${Math.max(1, totalMinutes)}m`
+  if (totalMinutes < 60) return zhCN.composer.resetsIn(Math.max(1, totalMinutes), 'm')
 
   const totalHours = Math.round(totalMinutes / 60)
-  if (totalHours < 48) return `resets in ${Math.max(1, totalHours)}h`
+  if (totalHours < 48) return zhCN.composer.resetsIn(Math.max(1, totalHours), 'h')
 
   const totalDays = Math.round(totalHours / 24)
-  return `resets in ${Math.max(1, totalDays)}d`
+  return zhCN.composer.resetsIn(Math.max(1, totalDays), 'd')
 }
 
 function formatResetDate(resetsAt: number | null): string {
@@ -753,9 +752,9 @@ function buildQuotaSummaryText(quota: UiRateLimitSnapshot | null): string {
   }
 
   if (segments.length === 0 && quota.credits?.unlimited) {
-    segments.push('Unlimited credits')
+    segments.push(zhCN.composer.unlimitedCredits)
   } else if (segments.length === 0 && quota.credits?.hasCredits && quota.credits.balance) {
-    segments.push(`${quota.credits.balance} credits`)
+    segments.push(zhCN.composer.credits(quota.credits.balance))
   }
 
   return segments.join(' · ')
@@ -767,30 +766,30 @@ function buildQuotaTooltipText(quota: UiRateLimitSnapshot | null): string {
   const lines: string[] = []
   const plan = formatPlanType(quota.planType)
   if (plan) {
-    lines.push(`Plan: ${plan}`)
+    lines.push(`套餐：${plan}`)
   }
 
   if (quota.primary) {
     const reset = formatResetTime(quota.primary.resetsAt)
-    lines.push(`Primary window: ${formatWindowSummary(quota.primary)}${reset ? `, ${reset}` : ''}`)
+    lines.push(zhCN.composer.primaryWindow(formatWindowSummary(quota.primary), reset))
   }
 
   if (quota.secondary) {
     const reset = formatResetTime(quota.secondary.resetsAt)
-    lines.push(`Secondary window: ${formatWindowSummary(quota.secondary)}${reset ? `, ${reset}` : ''}`)
+    lines.push(zhCN.composer.secondaryWindow(formatWindowSummary(quota.secondary), reset))
   }
 
   if (quota.credits?.unlimited) {
-    lines.push('Credits: unlimited')
+    lines.push(zhCN.composer.creditsUnlimited)
   } else if (quota.credits?.hasCredits && quota.credits.balance) {
-    lines.push(`Credits: ${quota.credits.balance}`)
+    lines.push(zhCN.composer.credits(quota.credits.balance))
   }
 
   const weeklyWindow = pickWeeklyQuotaWindow(quota)
   if (weeklyWindow) {
     const weeklyRefreshDate = formatResetDate(weeklyWindow.resetsAt)
     if (weeklyRefreshDate) {
-      lines.push(`Weekly refresh: ${weeklyRefreshDate}`)
+      lines.push(zhCN.composer.weeklyRefresh(weeklyRefreshDate))
     }
   }
 
@@ -802,7 +801,7 @@ function buildQuotaWeeklyRefreshText(quota: UiRateLimitSnapshot | null): string 
   const weeklyWindow = pickWeeklyQuotaWindow(quota)
   if (!weeklyWindow) return ''
   const weeklyRefreshDate = formatResetDate(weeklyWindow.resetsAt)
-  return weeklyRefreshDate ? `Weekly refresh ${weeklyRefreshDate}` : ''
+  return weeklyRefreshDate ? zhCN.composer.weeklyRefresh(weeklyRefreshDate) : ''
 }
 
 function formatCompactTokenCount(value: number): string {
@@ -822,17 +821,17 @@ function formatCompactTokenCount(value: number): string {
 function formatBreakdownSummary(breakdown: UiTokenUsageBreakdown): string {
   const nonCachedInput = Math.max(0, breakdown.inputTokens - breakdown.cachedInputTokens)
   const parts = [
-    `${formatCompactTokenCount(breakdown.totalTokens)} total`,
-    `${formatCompactTokenCount(nonCachedInput)} input`,
+    `${formatCompactTokenCount(breakdown.totalTokens)} 总计`,
+    `${formatCompactTokenCount(nonCachedInput)} 输入`,
   ]
   if (breakdown.cachedInputTokens > 0) {
-    parts.push(`${formatCompactTokenCount(breakdown.cachedInputTokens)} cached`)
+    parts.push(`${formatCompactTokenCount(breakdown.cachedInputTokens)} 缓存`)
   }
   if (breakdown.outputTokens > 0) {
-    parts.push(`${formatCompactTokenCount(breakdown.outputTokens)} output`)
+    parts.push(`${formatCompactTokenCount(breakdown.outputTokens)} 输出`)
   }
   if (breakdown.reasoningOutputTokens > 0) {
-    parts.push(`${formatCompactTokenCount(breakdown.reasoningOutputTokens)} reasoning`)
+    parts.push(`${formatCompactTokenCount(breakdown.reasoningOutputTokens)} 推理`)
   }
   return parts.join(' · ')
 }
@@ -877,10 +876,10 @@ function buildContextUsageView(
   return {
     summaryText: `${percentRemaining}% · ${formatCompactTokenCount(tokensInContext)} / ${formatCompactTokenCount(contextWindow)}`,
     tooltipText: [
-      `Context window: ${percentRemaining}% left (${percentUsed}% used)`,
-      `In context: ${tokensInContext.toLocaleString()} / ${contextWindow.toLocaleString()} tokens`,
-      `Last turn: ${formatBreakdownSummary(usage.last)}`,
-      `Session total: ${formatBreakdownSummary(usage.total)}`,
+      zhCN.composer.contextWindow(percentRemaining, percentUsed),
+      zhCN.composer.inContext(tokensInContext.toLocaleString(), contextWindow.toLocaleString()),
+      `上一轮：${formatBreakdownSummary(usage.last)}`,
+      `会话累计：${formatBreakdownSummary(usage.total)}`,
     ].join('\n'),
     percentRemaining,
     tone,
@@ -1151,7 +1150,7 @@ function normalizeSelectedFiles(files: FileList | File[] | null | undefined): Fi
 }
 
 function formatAttachmentFileCount(count: number): string {
-  return count === 1 ? '1 file' : `${count} files`
+  return zhCN.composer.fileCount(count)
 }
 
 function beginAttachmentWork(sessionToken: number): boolean {
@@ -1348,7 +1347,7 @@ async function addFolderFiles(files: FileList | null): Promise<void> {
   const generation = draftGeneration.value
   const rows = Array.from(files)
   const firstRelativePath = (rows[0] as File & { webkitRelativePath?: string }).webkitRelativePath || rows[0].name
-  const folderName = firstRelativePath.split('/').filter(Boolean)[0] || 'Folder'
+  const folderName = firstRelativePath.split('/').filter(Boolean)[0] || '文件夹'
   const groupId = `${Date.now()}-${Math.random().toString(36).slice(2)}`
   folderUploadGroups.value = [
     ...folderUploadGroups.value,

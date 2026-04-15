@@ -1,13 +1,13 @@
 <template>
   <div class="skills-hub">
     <div class="skills-hub-header">
-      <h2 class="skills-hub-title">Skills Hub</h2>
-      <p class="skills-hub-subtitle">Browse and discover skills from the OpenClaw community</p>
+      <h2 class="skills-hub-title">{{ zhCN.skills.hubTitle }}</h2>
+      <p class="skills-hub-subtitle">{{ zhCN.skills.hubSubtitle }}</p>
     </div>
 
     <div class="skills-sync-panel">
       <div class="skills-sync-header">
-        <strong>Skills Sync (GitHub)</strong>
+        <strong>{{ zhCN.skills.syncTitle }}</strong>
         <a
           v-if="syncStatus.configured && githubRepoUrl"
           class="skills-sync-badge skills-sync-badge-link"
@@ -15,36 +15,36 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          Connected: {{ syncStatus.repoOwner }}/{{ syncStatus.repoName }}
+          {{ zhCN.skills.connectedRepo(syncStatus.repoOwner, syncStatus.repoName) }}
         </a>
-        <span v-else-if="syncStatus.loggedIn" class="skills-sync-badge">Logged in as {{ syncStatus.githubUsername }}</span>
-        <span v-else class="skills-sync-badge">Not connected</span>
+        <span v-else-if="syncStatus.loggedIn" class="skills-sync-badge">{{ zhCN.skills.loggedInAs(syncStatus.githubUsername) }}</span>
+        <span v-else class="skills-sync-badge">{{ zhCN.skills.notConnected }}</span>
       </div>
       <div class="skills-sync-meta">
-        <span>Startup: {{ syncStatus.startup.mode }}</span>
-        <span>Branch: {{ syncStatus.startup.branch }}</span>
-        <span>Action: {{ syncStatus.startup.lastAction }}</span>
+        <span>{{ zhCN.skills.startup(syncStatus.startup.mode) }}</span>
+        <span>{{ zhCN.skills.branch(syncStatus.startup.branch) }}</span>
+        <span>{{ zhCN.skills.action(syncStatus.startup.lastAction) }}</span>
       </div>
       <div v-if="syncStatus.startup.lastError" class="skills-sync-error">
         {{ syncStatus.startup.lastError }}
       </div>
       <div v-if="syncActionStatus" class="skills-sync-meta">
-        <span>Manual sync: {{ syncActionStatus }}</span>
+        <span>{{ zhCN.skills.manualSync(syncActionStatus) }}</span>
       </div>
       <div v-if="syncActionError" class="skills-sync-error">
         {{ syncActionError }}
       </div>
       <div v-if="deviceLogin" class="skills-sync-device">
-        <span>Open <a :href="deviceLogin.verification_uri" target="_blank" rel="noreferrer">GitHub device login</a> and enter code:</span>
+        <span>{{ zhCN.skills.openDeviceLogin }} <a :href="deviceLogin.verification_uri" target="_blank" rel="noreferrer">GitHub</a></span>
         <code>{{ deviceLogin.user_code }}</code>
       </div>
       <div class="skills-sync-actions">
-        <button v-if="!syncStatus.loggedIn" class="skills-hub-sort" type="button" @click="startGithubFirebaseLogin">Login with GitHub</button>
-        <button v-if="!syncStatus.loggedIn" class="skills-hub-sort" type="button" @click="startGithubLogin">Device Login</button>
-        <button v-if="syncStatus.loggedIn" class="skills-hub-sort" type="button" @click="logoutGithub" :disabled="isSyncActionInFlight">Logout GitHub</button>
-        <button class="skills-hub-sort" type="button" @click="startupSkillsSync" :disabled="isSyncActionInFlight">{{ isStartupSyncInFlight ? 'Syncing...' : 'Startup Sync' }}</button>
-        <button class="skills-hub-sort" type="button" @click="pullSkillsSync" :disabled="isSyncActionInFlight">{{ isPullInFlight ? 'Pulling...' : 'Pull' }}</button>
-        <button v-if="syncStatus.loggedIn" class="skills-hub-sort" type="button" @click="pushSkillsSync" :disabled="!syncStatus.configured || isSyncActionInFlight">{{ isPushInFlight ? 'Pushing...' : 'Push' }}</button>
+        <button v-if="!syncStatus.loggedIn" class="skills-hub-sort" type="button" @click="startGithubFirebaseLogin">{{ zhCN.skills.loginWithGitHub }}</button>
+        <button v-if="!syncStatus.loggedIn" class="skills-hub-sort" type="button" @click="startGithubLogin">{{ zhCN.skills.deviceLogin }}</button>
+        <button v-if="syncStatus.loggedIn" class="skills-hub-sort" type="button" @click="logoutGithub" :disabled="isSyncActionInFlight">{{ zhCN.skills.logoutGitHub }}</button>
+        <button class="skills-hub-sort" type="button" @click="startupSkillsSync" :disabled="isSyncActionInFlight">{{ isStartupSyncInFlight ? zhCN.skills.syncing : zhCN.skills.startupSync }}</button>
+        <button class="skills-hub-sort" type="button" @click="pullSkillsSync" :disabled="isSyncActionInFlight">{{ isPullInFlight ? zhCN.skills.pulling : zhCN.skills.pull }}</button>
+        <button v-if="syncStatus.loggedIn" class="skills-hub-sort" type="button" @click="pushSkillsSync" :disabled="!syncStatus.configured || isSyncActionInFlight">{{ isPushInFlight ? zhCN.skills.pushing : zhCN.skills.push }}</button>
       </div>
     </div>
 
@@ -52,7 +52,7 @@
 
     <div v-if="filteredInstalled.length > 0" class="skills-hub-section">
       <button class="skills-hub-section-toggle" type="button" @click="isInstalledOpen = !isInstalledOpen">
-        <span class="skills-hub-section-title">Installed ({{ filteredInstalled.length }})</span>
+        <span class="skills-hub-section-title">{{ zhCN.skills.installedCount(filteredInstalled.length) }}</span>
         <IconTablerChevronRight class="skills-hub-section-chevron" :class="{ 'is-open': isInstalledOpen }" />
       </button>
       <div v-if="isInstalledOpen" class="skills-hub-grid">
@@ -73,11 +73,11 @@
           v-model="query"
           class="skills-hub-search"
           type="text"
-          placeholder="Search skills... (e.g. flight, docker, react)"
+          :placeholder="zhCN.skills.searchPlaceholder"
           @keyup.enter.prevent="onSearchSubmit"
         />
-        <button class="skills-hub-search-btn" type="button" @click="onSearchSubmit">Search</button>
-        <span v-if="totalCount > 0" class="skills-hub-count">{{ totalCount }} skills</span>
+        <button class="skills-hub-search-btn" type="button" @click="onSearchSubmit">{{ zhCN.skills.search }}</button>
+        <span v-if="totalCount > 0" class="skills-hub-count">{{ zhCN.skills.skillsCount(totalCount) }}</span>
       </div>
       <button class="skills-hub-sort" type="button" @click="toggleSort">
         {{ sortLabel }}
@@ -85,7 +85,7 @@
     </div>
 
     <div class="skills-hub-section">
-      <div v-if="isLoading" class="skills-hub-loading">Loading skills...</div>
+      <div v-if="isLoading" class="skills-hub-loading">{{ zhCN.skills.loadingSkills }}</div>
       <div v-else-if="error" class="skills-hub-error">{{ error }}</div>
       <template v-else>
         <div v-if="browseSkills.length > 0" class="skills-hub-grid">
@@ -96,7 +96,7 @@
             @select="(skill) => openDetail(skill as HubSkill)"
           />
         </div>
-        <div v-else-if="activeQuery.trim()" class="skills-hub-empty">No skills found for "{{ activeQuery }}"</div>
+        <div v-else-if="activeQuery.trim()" class="skills-hub-empty">{{ zhCN.skills.noSkillsForQuery(activeQuery) }}</div>
       </template>
     </div>
 
@@ -120,6 +120,7 @@ import IconTablerChevronRight from '../icons/IconTablerChevronRight.vue'
 import SkillCard from './SkillCard.vue'
 import SkillDetailModal, { type HubSkill } from './SkillDetailModal.vue'
 import { useGithubSkillsSync } from '../../composables/useGithubSkillsSync'
+import { zhCN } from '../../copy/zhCN'
 
 const EMPTY_SKILL: HubSkill = { name: '', owner: '', description: '', url: '', installed: false }
 const SKILLS_HUB_CACHE_KEY = 'codex-web-local.skills-hub.cache.v1'
@@ -147,7 +148,7 @@ const emit = defineEmits<{
   'skills-changed': []
 }>()
 
-const sortLabel = computed(() => sortMode.value === 'date' ? 'Newest' : 'A-Z')
+const sortLabel = computed(() => sortMode.value === 'date' ? zhCN.skills.newest : zhCN.skills.sortByName)
 const toastClass = computed(() => toast.value?.type === 'error' ? 'skills-hub-toast-error' : 'skills-hub-toast-success')
 const currentDetailSkillKey = computed(() => `${detailSkill.value.owner}/${detailSkill.value.name}`)
 const isDetailInstalling = computed(() =>
@@ -259,7 +260,7 @@ async function fetchSkills(q: string): Promise<void> {
     applySkillsPayload(data)
     writeCache(key, data)
   } catch (e) {
-    error.value = e instanceof Error ? e.message : 'Failed to load skills'
+    error.value = e instanceof Error ? e.message : zhCN.skills.loadSkillsFailed
   } finally {
     isLoading.value = false
   }
@@ -284,17 +285,17 @@ async function handleInstall(skill: HubSkill): Promise<void> {
       body: JSON.stringify({ owner: skill.owner, name: skill.name }),
     })
     const data = (await resp.json()) as { ok?: boolean; error?: string; path?: string }
-    if (!data.ok) throw new Error(data.error || 'Install failed')
+    if (!data.ok) throw new Error(data.error || zhCN.skills.installFailed)
     const installed = { ...skill, installed: true, path: data.path, enabled: true }
     installedSkills.value = [...installedSkills.value, installed]
     browseSkills.value = browseSkills.value.filter((s) => s.name !== skill.name)
     detailSkill.value = installed
-    showToast(`${skill.displayName || skill.name} skill installed`)
+    showToast(zhCN.skills.skillInstalled(skill.displayName || skill.name))
     isDetailOpen.value = false
     clearCache()
     emit('skills-changed')
   } catch (e) {
-    showToast(e instanceof Error ? e.message : 'Failed to install skill', 'error')
+    showToast(e instanceof Error ? e.message : zhCN.skills.installFailed, 'error')
   } finally {
     isInstallActionInFlight.value = false
   }
@@ -310,17 +311,17 @@ async function handleUninstall(skill: HubSkill): Promise<void> {
       body: JSON.stringify({ name: skill.name, path: skill.path }),
     })
     const data = (await resp.json()) as { ok?: boolean; error?: string }
-    if (!data.ok) throw new Error(data.error || 'Uninstall failed')
+    if (!data.ok) throw new Error(data.error || zhCN.skills.uninstallFailed)
     installedSkills.value = installedSkills.value.filter((s) => s.name !== skill.name)
     if (skill.owner !== 'local') {
       browseSkills.value = [...browseSkills.value, { ...skill, installed: false, path: undefined, enabled: undefined }]
     }
-    showToast(`${skill.displayName || skill.name} skill uninstalled`)
+    showToast(zhCN.skills.skillUninstalled(skill.displayName || skill.name))
     isDetailOpen.value = false
     clearCache()
     emit('skills-changed')
   } catch (e) {
-    showToast(e instanceof Error ? e.message : 'Failed to uninstall skill', 'error')
+    showToast(e instanceof Error ? e.message : zhCN.skills.uninstallFailed, 'error')
   } finally {
     isUninstallActionInFlight.value = false
   }
@@ -333,12 +334,12 @@ async function handleToggleEnabled(skill: HubSkill, enabled: boolean): Promise<v
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ method: 'skills/config/write', params: { path: skill.path, enabled } }),
     })
-    if (!resp.ok) throw new Error('Failed to update skill')
+    if (!resp.ok) throw new Error(zhCN.skills.updateSkillFailed)
     await fetch('/codex-api/skills-sync/push', { method: 'POST' })
-    showToast(`${skill.displayName || skill.name} skill ${enabled ? 'enabled' : 'disabled'}`)
+    showToast(enabled ? zhCN.skills.skillEnabled(skill.displayName || skill.name) : zhCN.skills.skillDisabled(skill.displayName || skill.name))
     await fetchSkills(activeQuery.value)
   } catch (e) {
-    showToast(e instanceof Error ? e.message : 'Failed to update skill', 'error')
+    showToast(e instanceof Error ? e.message : zhCN.skills.updateSkillFailed, 'error')
   }
 }
 

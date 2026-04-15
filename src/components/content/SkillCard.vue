@@ -18,8 +18,8 @@
       <div class="skill-card-info">
         <div class="skill-card-header">
           <span class="skill-card-name">{{ skill.displayName || skill.name }}</span>
-          <span v-if="skill.installed && skill.enabled === false" class="skill-card-badge-disabled">Disabled</span>
-          <span v-else-if="skill.installed" class="skill-card-badge">Installed</span>
+          <span v-if="skill.installed && skill.enabled === false" class="skill-card-badge-disabled">{{ zhCN.skills.disabled }}</span>
+          <span v-else-if="skill.installed" class="skill-card-badge">{{ zhCN.skills.installed }}</span>
         </div>
         <span class="skill-card-owner">{{ skill.owner }}</span>
       </div>
@@ -27,7 +27,7 @@
         v-if="skill.installed && skillDirPath"
         class="skill-card-browse"
         type="button"
-        title="Browse files"
+        :title="zhCN.skills.browseFiles"
         @click.stop="onBrowse"
       >
         <IconTablerFolder class="skill-card-browse-icon" />
@@ -41,6 +41,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import IconTablerFolder from '../icons/IconTablerFolder.vue'
+import { zhCN } from '../../copy/zhCN'
 
 const props = defineProps<{
   skill: {
@@ -77,9 +78,9 @@ const publishedLabel = computed(() => {
   const d = new Date(ts)
   const now = Date.now()
   const diff = now - ts
-  if (diff < 3600_000) return `${Math.floor(diff / 60_000)}m ago`
-  if (diff < 86400_000) return `${Math.floor(diff / 3600_000)}h ago`
-  if (diff < 2592000_000) return `${Math.floor(diff / 86400_000)}d ago`
+  if (diff < 3600_000) return zhCN.skills.minutesAgo(Math.floor(diff / 60_000))
+  if (diff < 86400_000) return zhCN.skills.hoursAgo(Math.floor(diff / 3600_000))
+  if (diff < 2592000_000) return zhCN.skills.daysAgo(Math.floor(diff / 86400_000))
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 })
 

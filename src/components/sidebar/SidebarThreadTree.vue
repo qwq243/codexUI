@@ -20,7 +20,7 @@
             <template #left>
               <span class="thread-left-stack">
                 <span v-if="shouldShowThreadIndicator(thread)" class="thread-status-indicator" :data-state="getThreadState(thread)" />
-                <button class="thread-pin-button" type="button" title="pin" @click="togglePin(thread.id)">
+                <button class="thread-pin-button" type="button" :title="zhCN.threadTree.pin" @click="togglePin(thread.id)">
                   <IconTablerPin class="thread-icon" />
                 </button>
               </span>
@@ -29,7 +29,7 @@
               <span class="thread-row-title-wrap">
                 <span class="thread-row-title-line">
                   <span class="thread-row-title">{{ thread.title }}</span>
-                  <IconTablerGitFork v-if="thread.hasWorktree" class="thread-row-worktree-icon" title="Worktree thread" />
+                  <IconTablerGitFork v-if="thread.hasWorktree" class="thread-row-worktree-icon" :title="zhCN.threadTree.worktreeThread" />
                   <span
                     v-if="thread.pendingRequestState"
                     class="thread-row-request-chip"
@@ -48,7 +48,7 @@
                 <button
                   class="thread-menu-trigger"
                   type="button"
-                  title="thread_menu"
+                  :title="zhCN.threadTree.threadMenu"
                   @click.stop="toggleThreadMenu(thread.id)"
                 >
                   <IconTablerDots class="thread-icon" />
@@ -61,29 +61,29 @@
     </section>
 
     <SidebarMenuRow as="header" class="thread-tree-header-row">
-      <span class="thread-tree-header">Threads</span>
+      <span class="thread-tree-header">{{ zhCN.threadTree.threads }}</span>
       <template #right>
         <div ref="organizeMenuWrapRef" class="organize-menu-wrap">
           <button
             class="organize-menu-trigger"
             type="button"
             :aria-expanded="isOrganizeMenuOpen"
-            aria-label="Organize threads"
-            title="Organize threads"
+            :aria-label="zhCN.threadTree.organizeThreads"
+            :title="zhCN.threadTree.organizeThreads"
             @click="toggleOrganizeMenu"
           >
             <IconTablerDots class="thread-icon" />
           </button>
 
           <div v-if="isOrganizeMenuOpen" class="organize-menu-panel" @click.stop>
-            <p class="organize-menu-title">Organize</p>
+            <p class="organize-menu-title">{{ zhCN.threadTree.organize }}</p>
             <button
               class="organize-menu-item"
               :data-active="threadViewMode === 'project'"
               type="button"
               @click="setThreadViewMode('project')"
             >
-              <span>By project</span>
+              <span>{{ zhCN.threadTree.byProject }}</span>
               <span v-if="threadViewMode === 'project'">✓</span>
             </button>
             <button
@@ -92,7 +92,7 @@
               type="button"
               @click="setThreadViewMode('chronological')"
             >
-              <span>Chronological list</span>
+              <span>{{ zhCN.threadTree.chronologicalList }}</span>
               <span v-if="threadViewMode === 'chronological'">✓</span>
             </button>
           </div>
@@ -100,9 +100,9 @@
       </template>
     </SidebarMenuRow>
 
-    <p v-if="isSearchActive && filteredGroups.length === 0" class="thread-tree-no-results">No matching threads</p>
+    <p v-if="isSearchActive && filteredGroups.length === 0" class="thread-tree-no-results">{{ zhCN.threadTree.noMatchingThreads }}</p>
 
-    <p v-else-if="isLoading && groups.length === 0" class="thread-tree-loading">Loading threads...</p>
+    <p v-else-if="isLoading && groups.length === 0" class="thread-tree-loading">{{ zhCN.threadTree.loadingThreads }}</p>
 
     <ul v-else-if="isChronologicalView" class="thread-list thread-list-global">
       <li
@@ -127,7 +127,7 @@
                 class="thread-status-indicator"
                 :data-state="getThreadState(thread)"
               />
-              <button class="thread-pin-button" type="button" title="pin" @click="togglePin(thread.id)">
+              <button class="thread-pin-button" type="button" :title="zhCN.threadTree.pin" @click="togglePin(thread.id)">
                 <IconTablerPin class="thread-icon" />
               </button>
             </span>
@@ -136,7 +136,7 @@
             <span class="thread-row-title-wrap">
               <span class="thread-row-title-line">
                 <span class="thread-row-title">{{ thread.title }}</span>
-                <IconTablerGitFork v-if="thread.hasWorktree" class="thread-row-worktree-icon" title="Worktree thread" />
+                <IconTablerGitFork v-if="thread.hasWorktree" class="thread-row-worktree-icon" :title="zhCN.threadTree.worktreeThread" />
                 <span
                   v-if="thread.pendingRequestState"
                   class="thread-row-request-chip"
@@ -155,7 +155,7 @@
               <button
                 class="thread-menu-trigger"
                 type="button"
-                title="thread_menu"
+                :title="zhCN.threadTree.threadMenu"
                 @click.stop="toggleThreadMenu(thread.id)"
               >
                 <IconTablerDots class="thread-icon" />
@@ -212,7 +212,7 @@
                   <button
                     class="project-menu-trigger"
                     type="button"
-                    title="project_menu"
+                    :title="zhCN.threadTree.projectMenu"
                     @click.stop="toggleProjectMenu(group.projectName)"
                   >
                     <IconTablerDots class="thread-icon" />
@@ -226,18 +226,18 @@
                   >
                     <template v-if="projectMenuMode === 'actions'">
                       <button class="project-menu-item" type="button" @click="openRenameProjectMenu(group.projectName)">
-                        Edit name
+                        {{ zhCN.threadTree.editName }}
                       </button>
                       <button
                         class="project-menu-item project-menu-item-danger"
                         type="button"
                         @click="onRemoveProject(group.projectName)"
                       >
-                        Remove
+                        {{ zhCN.common.remove }}
                       </button>
                     </template>
                     <template v-else>
-                      <label class="project-menu-label">Project name</label>
+                      <label class="project-menu-label">{{ zhCN.threadTree.projectName }}</label>
                       <input
                         v-model="projectRenameDraft"
                         class="project-menu-input"
@@ -284,7 +284,7 @@
                       class="thread-status-indicator"
                       :data-state="getThreadState(thread)"
                     />
-                    <button class="thread-pin-button" type="button" title="pin" @click="togglePin(thread.id)">
+                    <button class="thread-pin-button" type="button" :title="zhCN.threadTree.pin" @click="togglePin(thread.id)">
                       <IconTablerPin class="thread-icon" />
                     </button>
                   </span>
@@ -293,7 +293,7 @@
                   <span class="thread-row-title-wrap">
                     <span class="thread-row-title-line">
                       <span class="thread-row-title">{{ thread.title }}</span>
-                      <IconTablerGitFork v-if="thread.hasWorktree" class="thread-row-worktree-icon" title="Worktree thread" />
+                      <IconTablerGitFork v-if="thread.hasWorktree" class="thread-row-worktree-icon" :title="zhCN.threadTree.worktreeThread" />
                       <span
                         v-if="thread.pendingRequestState"
                         class="thread-row-request-chip"
@@ -312,7 +312,7 @@
                     <button
                       class="thread-menu-trigger"
                       type="button"
-                      title="thread_menu"
+                      :title="zhCN.threadTree.threadMenu"
                       @click.stop="toggleThreadMenu(thread.id)"
                     >
                       <IconTablerDots class="thread-icon" />
@@ -327,7 +327,7 @@
             <template #left>
               <span class="project-empty-spacer" />
             </template>
-            <span class="project-empty">No threads</span>
+            <span class="project-empty">{{ zhCN.threadTree.noThreads }}</span>
           </SidebarMenuRow>
 
           <SidebarMenuRow v-if="hasHiddenThreads(group)" class="thread-show-more-row">
@@ -335,7 +335,7 @@
               <span class="thread-show-more-spacer" />
             </template>
             <button class="thread-show-more-button" type="button" @click="toggleProjectExpansion(group.projectName)">
-              {{ isExpanded(group.projectName) ? 'Show less' : 'Show more' }}
+              {{ isExpanded(group.projectName) ? zhCN.threadTree.showLess : zhCN.threadTree.showMore }}
             </button>
           </SidebarMenuRow>
       </article>
@@ -351,40 +351,40 @@
         @click.stop
       >
         <button class="thread-menu-item" type="button" @click="onBrowseThreadFiles(openThreadMenuThread.id)">
-          Browse files
+          {{ zhCN.threadTree.browseFiles }}
         </button>
         <button class="thread-menu-item" type="button" @click="onExportThread(openThreadMenuThread.id)">
-          Export chat
+          {{ zhCN.threadTree.exportChat }}
         </button>
         <button class="thread-menu-item" type="button" @click="onForkThread(openThreadMenuThread.id)">
-          Create chat fork
+          {{ zhCN.threadTree.createChatFork }}
         </button>
         <button class="thread-menu-item" type="button" @click="openRenameThreadDialog(openThreadMenuThread.id, openThreadMenuThread.title)">
-          Rename thread
+          {{ zhCN.threadTree.renameThread }}
         </button>
         <button class="thread-menu-item thread-menu-item-danger" type="button" @click="openDeleteThreadDialog(openThreadMenuThread.id, openThreadMenuThread.title)">
-          Delete thread
+          {{ zhCN.threadTree.deleteThread }}
         </button>
       </div>
     </Teleport>
 
     <Teleport to="body">
       <div v-if="renameThreadDialogVisible" class="rename-thread-overlay" @click.self="closeRenameThreadDialog">
-        <div class="rename-thread-panel" role="dialog" aria-modal="true" aria-label="Thread title">
-          <h3 class="rename-thread-title">Rename thread</h3>
-          <p class="rename-thread-subtitle">Make it short and recognizable.</p>
+        <div class="rename-thread-panel" role="dialog" aria-modal="true" :aria-label="zhCN.threadTree.threadTitle">
+          <h3 class="rename-thread-title">{{ zhCN.threadTree.renameThread }}</h3>
+          <p class="rename-thread-subtitle">{{ zhCN.threadTree.makeShortAndRecognizable }}</p>
           <input
             ref="renameThreadInputRef"
             v-model="renameThreadDraft"
             class="rename-thread-input"
             type="text"
-            placeholder="Add title..."
+            :placeholder="zhCN.threadTree.addTitle"
             @keydown.enter.prevent="submitRenameThread"
             @keydown.esc.prevent="closeRenameThreadDialog"
           />
           <div class="rename-thread-actions">
-            <button class="rename-thread-button" type="button" @click="closeRenameThreadDialog">Cancel</button>
-            <button class="rename-thread-button rename-thread-button-primary" type="button" @click="submitRenameThread">Save</button>
+            <button class="rename-thread-button" type="button" @click="closeRenameThreadDialog">{{ zhCN.common.cancel }}</button>
+            <button class="rename-thread-button rename-thread-button-primary" type="button" @click="submitRenameThread">{{ zhCN.common.save }}</button>
           </div>
         </div>
       </div>
@@ -392,14 +392,14 @@
 
     <Teleport to="body">
       <div v-if="deleteThreadDialogVisible" class="rename-thread-overlay" @click.self="closeDeleteThreadDialog">
-        <div class="rename-thread-panel" role="dialog" aria-modal="true" aria-label="Delete thread">
-          <h3 class="rename-thread-title">Delete thread?</h3>
+        <div class="rename-thread-panel" role="dialog" aria-modal="true" :aria-label="zhCN.threadTree.deleteThreadTitle">
+          <h3 class="rename-thread-title">{{ zhCN.threadTree.deleteThreadQuestion }}</h3>
           <p class="rename-thread-subtitle">
-            This will archive the thread "{{ deleteThreadTitle }}". You can find it later in archived threads.
+            {{ zhCN.threadTree.deleteThreadDescription(deleteThreadTitle) }}
           </p>
           <div class="rename-thread-actions">
-            <button class="rename-thread-button" type="button" @click="closeDeleteThreadDialog">Cancel</button>
-            <button class="rename-thread-button rename-thread-button-danger" type="button" @click="submitDeleteThread">Delete</button>
+            <button class="rename-thread-button" type="button" @click="closeDeleteThreadDialog">{{ zhCN.common.cancel }}</button>
+            <button class="rename-thread-button rename-thread-button-danger" type="button" @click="submitDeleteThread">{{ zhCN.common.delete }}</button>
           </div>
         </div>
       </div>
@@ -420,6 +420,7 @@ import IconTablerFolder from '../icons/IconTablerFolder.vue'
 import IconTablerFolderOpen from '../icons/IconTablerFolderOpen.vue'
 import IconTablerGitFork from '../icons/IconTablerGitFork.vue'
 import IconTablerPin from '../icons/IconTablerPin.vue'
+import { zhCN } from '../../copy/zhCN'
 import SidebarMenuRow from './SidebarMenuRow.vue'
 
 const props = defineProps<{
@@ -794,7 +795,7 @@ function onForkThread(threadId: string): void {
 }
 
 function getNewThreadButtonAriaLabel(projectName: string): string {
-  return `start new thread ${getProjectDisplayName(projectName)}`
+  return zhCN.threadTree.newThreadInProject(getProjectDisplayName(projectName))
 }
 
 function onStartNewThread(projectName: string): void {
@@ -1523,7 +1524,9 @@ function shouldShowThreadIndicator(thread: UiThread): boolean {
 }
 
 function threadRequestLabel(thread: UiThread): string {
-  return thread.pendingRequestState === 'approval' ? 'Awaiting approval' : 'Awaiting response'
+  return thread.pendingRequestState === 'approval'
+    ? zhCN.threadTree.awaitingApproval
+    : zhCN.threadTree.awaitingResponse
 }
 
 function getThreadState(thread: UiThread): 'awaiting-approval' | 'awaiting-response' | 'working' | 'unread' | 'idle' {

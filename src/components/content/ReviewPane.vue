@@ -2,7 +2,7 @@
   <section class="review-pane" :class="{ 'is-mobile': isMobile }" @click.stop>
     <header class="review-pane-header">
       <div class="review-pane-heading">
-        <p class="review-pane-eyebrow">Review</p>
+        <p class="review-pane-eyebrow">评审</p>
         <p class="review-pane-title">{{ headerTitle }}</p>
       </div>
       <div class="review-pane-header-actions">
@@ -12,9 +12,9 @@
           class="review-pane-mobile-files-button"
           @click="isFileSheetOpen = true"
         >
-          Files
+          文件
         </button>
-        <button type="button" class="review-pane-close" aria-label="Close review pane" @click="$emit('close')">
+        <button type="button" class="review-pane-close" aria-label="关闭评审面板" @click="$emit('close')">
           <IconTablerX class="icon-svg" />
         </button>
       </div>
@@ -38,7 +38,7 @@
 
       <div class="review-pane-toolbar-controls">
         <div class="review-pane-control-cluster">
-          <span class="review-pane-control-label">Compare</span>
+          <span class="review-pane-control-label">比较</span>
           <div class="review-pane-segmented">
             <button
               type="button"
@@ -46,7 +46,7 @@
               :data-active="activeScope === 'workspace'"
               @click="activeScope = 'workspace'"
             >
-              Workspace
+              工作区
             </button>
             <button
               type="button"
@@ -55,13 +55,13 @@
               :disabled="!snapshot?.baseBranch"
               @click="activeScope = 'baseBranch'"
             >
-              Base branch
+              基础分支
             </button>
           </div>
         </div>
 
         <div v-if="activeScope === 'baseBranch' && snapshot?.baseBranchOptions.length" class="review-pane-control-cluster">
-          <span class="review-pane-control-label">Branch</span>
+          <span class="review-pane-control-label">分支</span>
           <label class="review-pane-branch-select-wrap">
             <select
               v-model="selectedBaseBranch"
@@ -79,7 +79,7 @@
         </div>
 
         <div v-if="activeScope === 'workspace'" class="review-pane-control-cluster">
-          <span class="review-pane-control-label">Changes</span>
+          <span class="review-pane-control-label">更改</span>
           <div class="review-pane-segmented">
             <button
               type="button"
@@ -87,7 +87,7 @@
               :data-active="workspaceView === 'unstaged'"
               @click="workspaceView = 'unstaged'"
             >
-              Unstaged
+              未暂存
             </button>
             <button
               type="button"
@@ -95,7 +95,7 @@
               :data-active="workspaceView === 'staged'"
               @click="workspaceView = 'staged'"
             >
-              Staged
+              已暂存
             </button>
           </div>
         </div>
@@ -108,10 +108,10 @@
           :disabled="!canRunReview || isRunningReview"
           @click="runReview"
         >
-          {{ isRunningReview ? 'Reviewing…' : 'Run review' }}
+          {{ isRunningReview ? '评审中…' : '运行评审' }}
         </button>
         <button type="button" class="review-pane-refresh" :disabled="isLoadingSnapshot" @click="reloadAll">
-          Refresh
+          刷新
         </button>
       </div>
     </div>
@@ -121,34 +121,34 @@
     </div>
 
     <div v-if="snapshot" class="review-pane-meta">
-      <span>{{ snapshot.summary.fileCount }} files</span>
+      <span>{{ snapshot.summary.fileCount }} 个文件</span>
       <span class="review-pane-summary-pill review-pane-summary-pill-add">+{{ snapshot.summary.addedLineCount }}</span>
       <span class="review-pane-summary-pill review-pane-summary-pill-remove">-{{ snapshot.summary.removedLineCount }}</span>
       <span v-if="snapshot.headBranch">{{ snapshot.headBranch }}</span>
-      <span v-if="activeScope === 'baseBranch' && snapshot.baseBranch">vs {{ snapshot.baseBranch }}</span>
+      <span v-if="activeScope === 'baseBranch' && snapshot.baseBranch">对比 {{ snapshot.baseBranch }}</span>
     </div>
 
     <div v-if="activeTab === 'changes'" class="review-pane-content">
       <template v-if="!snapshot">
         <div class="review-pane-empty">
-          <p class="review-pane-empty-title">Loading review state</p>
+          <p class="review-pane-empty-title">正在加载评审状态</p>
         </div>
       </template>
 
       <template v-else-if="!snapshot.isGitRepo">
         <div class="review-pane-empty">
-          <p class="review-pane-empty-title">This folder is not a Git repository</p>
-          <p class="review-pane-empty-text">Initialize Git to review local changes and run Codex review.</p>
+          <p class="review-pane-empty-title">此文件夹不是 Git 仓库</p>
+          <p class="review-pane-empty-text">先初始化 Git，才能评审本地更改并运行 Codex 评审。</p>
           <button type="button" class="review-pane-primary-cta" :disabled="isInitializingGit" @click="initializeGit">
-            {{ isInitializingGit ? 'Initializing…' : 'Initialize Git' }}
+            {{ isInitializingGit ? '初始化中…' : '初始化 Git' }}
           </button>
         </div>
       </template>
 
       <template v-else-if="activeScope === 'baseBranch' && !snapshot.baseBranch">
         <div class="review-pane-empty">
-          <p class="review-pane-empty-title">Base branch unavailable</p>
-          <p class="review-pane-empty-text">Could not resolve `origin/HEAD`, `main`, or `master` for this repository.</p>
+          <p class="review-pane-empty-title">基础分支不可用</p>
+          <p class="review-pane-empty-text">无法为该仓库解析 `origin/HEAD`、`main` 或 `master`。</p>
         </div>
       </template>
 
@@ -167,9 +167,9 @@
         </div>
 
         <div v-if="!snapshot.files.length" class="review-pane-empty">
-          <p class="review-pane-empty-title">No changes in this scope</p>
+          <p class="review-pane-empty-title">当前范围内没有更改</p>
           <p class="review-pane-empty-text">
-            {{ activeScope === 'workspace' ? 'Your current workspace is clean.' : 'No merge diff found against the base branch.' }}
+            {{ activeScope === 'workspace' ? '当前工作区是干净的。' : '相对于基础分支没有发现合并差异。' }}
           </p>
         </div>
 
@@ -329,7 +329,7 @@
       <div v-else class="review-pane-empty">
         <p class="review-pane-empty-title">No structured findings yet</p>
         <p class="review-pane-empty-text">
-          {{ currentReviewResult?.summary ? 'The latest review only returned summary text.' : 'Run review to populate this pane.' }}
+          {{ currentReviewResult?.summary ? '最近一次评审只返回了摘要文本。' : '运行评审后这里会显示结果。' }}
         </p>
       </div>
     </div>
@@ -343,7 +343,7 @@
         <div class="review-pane-sheet" @click.stop>
           <div class="review-pane-sheet-handle" aria-hidden="true"></div>
           <div class="review-pane-sheet-header">
-            <p class="review-pane-sheet-title">Changed files</p>
+            <p class="review-pane-sheet-title">已更改文件</p>
             <p class="review-pane-sheet-count">{{ snapshot.files.length }}</p>
           </div>
           <div class="review-pane-sheet-list">
@@ -453,8 +453,8 @@ let stopNotifications: (() => void) | null = null
 let stopResizeTracking: (() => void) | null = null
 
 const reviewTabs = [
-  { value: 'changes' as const, label: 'Changes' },
-  { value: 'findings' as const, label: 'Findings' },
+  { value: 'changes' as const, label: '更改' },
+  { value: 'findings' as const, label: '发现' },
 ]
 
 type ReviewTreeFolderNode = {
@@ -497,11 +497,11 @@ const selectedFile = computed(() => snapshot.value?.files.find((file) => file.id
 const folderExpansionState = ref<Record<string, boolean>>({})
 
 const headerTitle = computed(() => {
-  if (!snapshot.value?.isGitRepo) return 'Repository review'
+  if (!snapshot.value?.isGitRepo) return '仓库评审'
   if (activeScope.value === 'workspace') {
-    return workspaceView.value === 'staged' ? 'Staged changes' : 'Workspace changes'
+    return workspaceView.value === 'staged' ? '已暂存更改' : '工作区更改'
   }
-  return snapshot.value?.baseBranch ? `Against ${snapshot.value.baseBranch}` : 'Base branch'
+  return snapshot.value?.baseBranch ? `对比 ${snapshot.value.baseBranch}` : '基础分支'
 })
 
 const canRunReview = computed(() => (
@@ -522,31 +522,31 @@ const showRowActions = computed(() => showBulkActions.value && !isApplyingAction
 
 const bulkActions = computed(() => {
   if (workspaceView.value === 'staged') {
-    return [{ value: 'unstage' as UiReviewAction, label: 'Unstage all' }]
+    return [{ value: 'unstage' as UiReviewAction, label: '全部取消暂存' }]
   }
   return [
-    { value: 'stage' as UiReviewAction, label: 'Stage all' },
-    { value: 'revert' as UiReviewAction, label: 'Revert all' },
+    { value: 'stage' as UiReviewAction, label: '全部暂存' },
+    { value: 'revert' as UiReviewAction, label: '全部还原' },
   ]
 })
 
 const fileActions = computed(() => {
   if (workspaceView.value === 'staged') {
-    return [{ value: 'unstage' as UiReviewAction, label: 'Unstage file' }]
+    return [{ value: 'unstage' as UiReviewAction, label: '取消暂存文件' }]
   }
   return [
-    { value: 'stage' as UiReviewAction, label: 'Stage file' },
-    { value: 'revert' as UiReviewAction, label: 'Revert file' },
+    { value: 'stage' as UiReviewAction, label: '暂存文件' },
+    { value: 'revert' as UiReviewAction, label: '还原文件' },
   ]
 })
 
 const hunkActions = computed(() => {
   if (workspaceView.value === 'staged') {
-    return [{ value: 'unstage' as UiReviewAction, label: 'Unstage hunk' }]
+    return [{ value: 'unstage' as UiReviewAction, label: '取消暂存代码块' }]
   }
   return [
-    { value: 'stage' as UiReviewAction, label: 'Stage hunk' },
-    { value: 'revert' as UiReviewAction, label: 'Revert hunk' },
+    { value: 'stage' as UiReviewAction, label: '暂存代码块' },
+    { value: 'revert' as UiReviewAction, label: '还原代码块' },
   ]
 })
 
@@ -809,7 +809,7 @@ async function loadSnapshot(): Promise<void> {
       selectedHunkId.value = nextSnapshot.files[0]?.hunks[0]?.id ?? ''
     }
   } catch (error) {
-    snapshotError.value = error instanceof Error ? error.message : 'Failed to load review snapshot'
+    snapshotError.value = error instanceof Error ? error.message : '加载评审快照失败'
   } finally {
     isLoadingSnapshot.value = false
   }
@@ -867,7 +867,7 @@ async function applyAction(action: UiReviewAction, level: 'all' | 'file' | 'hunk
       selectedHunkId.value = nextSnapshot.files[0]?.hunks[0]?.id ?? ''
     }
   } catch (error) {
-    reviewError.value = error instanceof Error ? error.message : 'Failed to apply review action'
+    reviewError.value = error instanceof Error ? error.message : '应用评审操作失败'
   } finally {
     isApplyingAction.value = false
   }
@@ -894,7 +894,7 @@ async function initializeGit(): Promise<void> {
     await initializeReviewGit(props.cwd)
     await loadSnapshot()
   } catch (error) {
-    reviewError.value = error instanceof Error ? error.message : 'Failed to initialize Git'
+    reviewError.value = error instanceof Error ? error.message : '初始化 Git 失败'
   } finally {
     isInitializingGit.value = false
   }
@@ -904,8 +904,8 @@ async function runReview(): Promise<void> {
   if (!canRunReview.value || isRunningReview.value) return
   reviewError.value = ''
   reviewStatusLabel.value = activeScope.value === 'workspace'
-    ? 'Reviewing current changes'
-    : `Reviewing against ${snapshot.value?.baseBranch ?? 'base branch'}`
+    ? '正在评审当前更改'
+    : `正在评审相对于 ${snapshot.value?.baseBranch ?? '基础分支'} 的差异`
   isRunningReview.value = true
   pendingReviewKey.value = reviewKey.value
 
@@ -919,7 +919,7 @@ async function runReview(): Promise<void> {
   } catch (error) {
     isRunningReview.value = false
     reviewStatusLabel.value = ''
-    reviewError.value = error instanceof Error ? error.message : 'Failed to start review'
+    reviewError.value = error instanceof Error ? error.message : '启动评审失败'
   }
 }
 
@@ -983,7 +983,7 @@ function handleNotification(notification: RpcNotification): void {
 
   if (notification.method === 'item/started' && itemType === 'enteredReviewMode') {
     isRunningReview.value = true
-    reviewStatusLabel.value = typeof item?.review === 'string' ? item.review : 'Review in progress'
+    reviewStatusLabel.value = typeof item?.review === 'string' ? item.review : '评审进行中'
     return
   }
 
@@ -1001,7 +1001,7 @@ function handleNotification(notification: RpcNotification): void {
         activeTab.value = 'findings'
       })
       .catch((error) => {
-        reviewError.value = error instanceof Error ? error.message : 'Failed to load review result'
+        reviewError.value = error instanceof Error ? error.message : '加载评审结果失败'
       })
       .finally(() => {
         pendingReviewKey.value = ''

@@ -439,7 +439,7 @@ function pickThreadName(summary: Thread): string {
 
 function toThreadTitle(summary: Thread): string {
   const named = pickThreadName(summary)
-  return named.length > 0 ? named : 'Untitled thread'
+  return named.length > 0 ? named : '未命名线程'
 }
 
 function isTurnInProgress(turn: Turn | null | undefined): boolean {

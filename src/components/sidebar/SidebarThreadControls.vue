@@ -3,8 +3,8 @@
     <button
       class="sidebar-thread-controls-button"
       type="button"
-      :aria-label="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-      :title="isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      :aria-label="isSidebarCollapsed ? zhCN.sidebar.expandSidebar : zhCN.sidebar.collapseSidebar"
+      :title="isSidebarCollapsed ? zhCN.sidebar.expandSidebar : zhCN.sidebar.collapseSidebar"
       @click="$emit('toggle-sidebar')"
     >
       <IconTablerLayoutSidebarFilled v-if="isSidebarCollapsed" class="sidebar-thread-controls-icon" />
@@ -17,8 +17,8 @@
       v-if="showNewThreadButton"
       class="sidebar-thread-controls-button"
       type="button"
-      aria-label="Start new thread"
-      title="Start new thread"
+      aria-label="开始新线程"
+      title="开始新线程"
       @click="$emit('start-new-thread')"
     >
       <IconTablerFilePencil class="sidebar-thread-controls-icon" />
@@ -30,6 +30,7 @@
 import IconTablerFilePencil from '../icons/IconTablerFilePencil.vue'
 import IconTablerLayoutSidebar from '../icons/IconTablerLayoutSidebar.vue'
 import IconTablerLayoutSidebarFilled from '../icons/IconTablerLayoutSidebarFilled.vue'
+import { zhCN } from '../../copy/zhCN'
 
 defineProps<{
   isSidebarCollapsed: boolean

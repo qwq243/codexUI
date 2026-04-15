@@ -42,9 +42,7 @@
               {{ option.label }}
             </button>
           </li>
-          <li v-if="filteredOptions.length === 0" class="composer-dropdown-empty">
-            No matching projects
-          </li>
+          <li v-if="filteredOptions.length === 0" class="composer-dropdown-empty">{{ zhCN.dropdown.noMatchingProjects }}</li>
         </ul>
 
         <div v-if="showAddAction" class="composer-dropdown-add-wrap">
@@ -59,8 +57,8 @@
               @keydown.esc.prevent="onCancelAdd"
             />
             <div class="composer-dropdown-add-actions">
-              <button type="button" class="composer-dropdown-add-btn" @click="onConfirmAdd">Open</button>
-              <button type="button" class="composer-dropdown-add-btn" @click="onCancelAdd">Cancel</button>
+              <button type="button" class="composer-dropdown-add-btn" @click="onConfirmAdd">{{ zhCN.dropdown.open }}</button>
+              <button type="button" class="composer-dropdown-add-btn" @click="onCancelAdd">{{ zhCN.common.cancel }}</button>
             </div>
           </template>
           <button
@@ -80,6 +78,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, type Component } from 'vue'
 import IconTablerChevronDown from '../icons/IconTablerChevronDown.vue'
+import { zhCN } from '../../copy/zhCN'
 
 type DropdownOption = {
   value: string
@@ -125,10 +124,10 @@ const selectedLabel = computed(() => {
 const openDirection = computed(() => props.openDirection ?? 'down')
 const enableSearch = computed(() => props.enableSearch === true)
 const showAddAction = computed(() => props.showAddAction === true)
-const searchPlaceholderText = computed(() => props.searchPlaceholder?.trim() || 'Quick search projects')
-const addActionLabelText = computed(() => props.addActionLabel?.trim() || 'Add new project')
+const searchPlaceholderText = computed(() => props.searchPlaceholder?.trim() || zhCN.dropdown.quickSearchProjects)
+const addActionLabelText = computed(() => props.addActionLabel?.trim() || zhCN.dropdown.addNewProject)
 const addActionMode = computed(() => props.addActionMode ?? 'inline')
-const addPlaceholderText = computed(() => props.addPlaceholder?.trim() || 'Project name or absolute path')
+const addPlaceholderText = computed(() => props.addPlaceholder?.trim() || zhCN.dropdown.projectNameOrPath)
 const filteredOptions = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
   if (!query) return props.options

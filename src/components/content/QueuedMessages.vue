@@ -8,9 +8,9 @@
       </svg>
       <span class="queued-row-text">{{ getMessagePreview(msg) }}</span>
       <div class="queued-row-actions">
-        <button class="queued-row-edit" type="button" title="Edit queued message" @click="$emit('edit', msg.id)">Edit</button>
-        <button class="queued-row-steer" type="button" title="Send now without interrupting work" @click="$emit('steer', msg.id)">Steer</button>
-        <button class="queued-row-delete" type="button" aria-label="Delete queued message" title="Delete queued message" @click="$emit('delete', msg.id)">
+        <button class="queued-row-edit" type="button" :title="zhCN.queued.editQueuedMessage" @click="$emit('edit', msg.id)">{{ zhCN.queued.edit }}</button>
+        <button class="queued-row-steer" type="button" :title="zhCN.queued.sendWithoutInterrupting" @click="$emit('steer', msg.id)">{{ zhCN.queued.steer }}</button>
+        <button class="queued-row-delete" type="button" :aria-label="zhCN.queued.deleteQueuedMessage" :title="zhCN.queued.deleteQueuedMessage" @click="$emit('delete', msg.id)">
           <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3" />
@@ -23,6 +23,8 @@
 </template>
 
 <script setup lang="ts">
+import { zhCN } from '../../copy/zhCN'
+
 type QueuedMessageRow = {
   id: string
   text: string
@@ -50,11 +52,11 @@ function getMessagePreview(message: QueuedMessageRow): string {
   const fileCount = message.fileAttachments?.length ?? 0
   const skillCount = message.skills?.length ?? 0
 
-  if (imageCount > 0) parts.push(`${imageCount} image${imageCount === 1 ? '' : 's'}`)
-  if (fileCount > 0) parts.push(`${fileCount} file${fileCount === 1 ? '' : 's'}`)
-  if (skillCount > 0) parts.push(`${skillCount} skill${skillCount === 1 ? '' : 's'}`)
+  if (imageCount > 0) parts.push(zhCN.queued.imageCount(imageCount))
+  if (fileCount > 0) parts.push(zhCN.queued.fileCount(fileCount))
+  if (skillCount > 0) parts.push(zhCN.queued.skillCount(skillCount))
 
-  return parts.join(', ') || '(empty queued message)'
+  return parts.join('，') || zhCN.queued.emptyQueuedMessage
 }
 </script>
 

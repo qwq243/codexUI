@@ -6,7 +6,7 @@
         v-model="query"
         class="skill-picker-search"
         type="text"
-        placeholder="Search skills..."
+        :placeholder="zhCN.dropdown.searchSkills"
         @keydown.escape.prevent="$emit('close')"
         @keydown.enter.prevent="selectHighlighted"
         @keydown.arrow-down.prevent="moveHighlight(1)"
@@ -27,12 +27,13 @@
         </button>
       </li>
     </ul>
-    <div v-else class="skill-picker-empty">No skills found</div>
+    <div v-else class="skill-picker-empty">{{ zhCN.dropdown.noSkillsFound }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
+import { zhCN } from '../../copy/zhCN'
 
 export type SkillOption = {
   name: string

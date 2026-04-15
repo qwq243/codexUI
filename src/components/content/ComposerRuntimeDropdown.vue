@@ -1,5 +1,5 @@
 <template>
-  <div class="runtime-toggle" role="radiogroup" aria-label="Continue in">
+  <div class="runtime-toggle" role="radiogroup" :aria-label="zhCN.dropdown.continueIn">
     <button
       v-for="option in options"
       :key="option.value"
@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import IconTablerFolder from '../icons/IconTablerFolder.vue'
 import IconTablerGitFork from '../icons/IconTablerGitFork.vue'
+import { zhCN } from '../../copy/zhCN'
 
 type RuntimeMode = 'local' | 'worktree'
 
@@ -31,8 +32,8 @@ const emit = defineEmits<{
 }>()
 
 const options = [
-  { value: 'local' as const, label: 'Local project', icon: IconTablerFolder },
-  { value: 'worktree' as const, label: 'New worktree', icon: IconTablerGitFork },
+  { value: 'local' as const, label: zhCN.runtime.localProject, icon: IconTablerFolder },
+  { value: 'worktree' as const, label: zhCN.runtime.newWorktree, icon: IconTablerGitFork },
 ]
 
 function onSelect(value: RuntimeMode): void {

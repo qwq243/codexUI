@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import type { UiRateLimitSnapshot, UiRateLimitWindow } from '../../types/codex'
+import { zhCN } from '../../copy/zhCN'
 
 defineProps<{
   snapshots: UiRateLimitSnapshot[]
@@ -45,7 +46,7 @@ function getSnapshotKey(snapshot: UiRateLimitSnapshot): string {
 }
 
 function getSnapshotTitle(snapshot: UiRateLimitSnapshot): string {
-  return snapshot.limitName?.trim() || snapshot.limitId?.trim() || 'Rate limits'
+  return snapshot.limitName?.trim() || snapshot.limitId?.trim() || zhCN.rateLimit.title
 }
 
 function formatPlanType(value: string): string {
@@ -57,7 +58,7 @@ function formatPlanType(value: string): string {
 }
 
 function formatWindowDuration(windowDurationMins: number | null): string {
-  if (!windowDurationMins || windowDurationMins <= 0) return 'Window'
+  if (!windowDurationMins || windowDurationMins <= 0) return zhCN.rateLimit.window
   if (windowDurationMins % 1440 === 0) return `${windowDurationMins / 1440}d`
   if (windowDurationMins % 60 === 0) return `${windowDurationMins / 60}h`
   if (windowDurationMins < 60) return `${windowDurationMins}m`
@@ -66,11 +67,11 @@ function formatWindowDuration(windowDurationMins: number | null): string {
 
 function formatRemainingPercent(value: number): string {
   const remaining = Math.max(0, Math.min(100, 100 - value))
-  return `${Math.round(remaining)}% left`
+  return zhCN.rateLimit.leftPercent(remaining)
 }
 
 function formatUsedPercent(value: number): string {
-  return `${Math.round(value)}%`
+  return zhCN.rateLimit.usedPercent(value)
 }
 
 function formatWindowMetric(window: UiRateLimitWindow, key: string): RateLimitMetric {
@@ -102,20 +103,20 @@ function formatRelativeResetText(window: UiRateLimitWindow | null): string {
   if (!window?.resetsAt) return ''
 
   const diffMs = window.resetsAt * 1000 - Date.now()
-  if (diffMs <= 0) return 'Resetting now'
+  if (diffMs <= 0) return zhCN.rateLimit.resettingNow
 
   const diffMinutes = Math.round(diffMs / 60000)
   if (diffMinutes < 60) {
-    return `Resets in ${diffMinutes}m`
+    return zhCN.rateLimit.resetsIn(diffMinutes, 'm')
   }
 
   const diffHours = Math.round(diffMinutes / 60)
   if (diffHours < 24) {
-    return `Resets in ${diffHours}h`
+    return zhCN.rateLimit.resetsIn(diffHours, 'h')
   }
 
   const diffDays = Math.round(diffHours / 24)
-  return `Resets in ${diffDays}d`
+  return zhCN.rateLimit.resetsIn(diffDays, 'd')
 }
 
 function getResetWindows(snapshot: UiRateLimitSnapshot): UiRateLimitWindow[] {
@@ -154,9 +155,9 @@ function getWeeklyResetText(snapshot: UiRateLimitSnapshot): string {
 function getCreditsText(snapshot: UiRateLimitSnapshot): string {
   const credits = snapshot.credits
   if (!credits) return ''
-  if (credits.unlimited) return 'Unlimited credits'
-  if (credits.balance) return `Credits ${credits.balance}`
-  if (credits.hasCredits) return 'Credits available'
+  if (credits.unlimited) return zhCN.rateLimit.unlimitedCredits
+  if (credits.balance) return zhCN.rateLimit.credits(credits.balance)
+  if (credits.hasCredits) return zhCN.rateLimit.creditsAvailable
   return ''
 }
 
@@ -174,7 +175,7 @@ function buildTooltip(snapshot: UiRateLimitSnapshot): string {
     lines.push(metric.label)
   }
   for (const window of getResetWindows(snapshot)) {
-    lines.push(`${formatWindowDuration(window.windowDurationMins)} used ${formatUsedPercent(window.usedPercent)}`)
+    lines.push(`${formatWindowDuration(window.windowDurationMins)} ${formatUsedPercent(window.usedPercent)}`)
   }
   for (const footer of getFooterParts(snapshot)) {
     lines.push(footer)

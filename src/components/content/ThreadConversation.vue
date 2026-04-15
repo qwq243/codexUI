@@ -1,12 +1,12 @@
 <template>
   <section class="conversation-root" @contextmenu.capture="onConversationContextMenu">
-    <p v-if="isLoading" class="conversation-loading">Loading messages...</p>
+    <p v-if="isLoading" class="conversation-loading">正在加载消息…</p>
 
     <p
       v-else-if="messages.length === 0 && pendingRequests.length === 0 && !liveOverlay"
       class="conversation-empty"
     >
-      No messages in this thread yet.
+      当前线程还没有消息。
     </p>
 
     <ul v-else ref="conversationListRef" class="conversation-list" @scroll="onConversationScroll">
@@ -17,7 +17,7 @@
           :disabled="isLoadingMore"
           @click="loadMoreAbove"
         >
-          {{ isLoadingMore ? 'Loading…' : 'Load earlier messages' }}
+          {{ isLoadingMore ? '正在加载…' : '加载更早的消息' }}
         </button>
       </li>
       <template v-for="message in visibleMessages" :key="message.id">
@@ -64,7 +64,7 @@
                     @click="toggleCommandExpand(cmd)"
                   >
                     <span class="cmd-chevron" :class="{ 'cmd-chevron-open': isCommandExpanded(cmd) }">▶</span>
-                    <code class="cmd-label">{{ cmd.commandExecution?.command || '(command)' }}</code>
+                    <code class="cmd-label">{{ cmd.commandExecution?.command || '（命令）' }}</code>
                     <span class="cmd-status">{{ commandStatusLabel(cmd) }}</span>
                   </button>
                   <div
@@ -75,7 +75,7 @@
                       <pre
                         class="cmd-output"
                         :class="{ 'cmd-output-condensed': isCommandOutputCondensed(cmd) }"
-                        v-text="cmd.commandExecution?.aggregatedOutput || '(no output)'"
+                        v-text="cmd.commandExecution?.aggregatedOutput || '（无输出）'"
                       ></pre>
                     </div>
                   </div>
@@ -96,7 +96,7 @@
                 @click="toggleCommandExpand(message)"
               >
                 <span class="cmd-chevron" :class="{ 'cmd-chevron-open': isCommandExpanded(message) }">▶</span>
-                <code class="cmd-label">{{ message.commandExecution?.command || '(command)' }}</code>
+                <code class="cmd-label">{{ message.commandExecution?.command || '（命令）' }}</code>
                 <span class="cmd-status">{{ commandStatusLabel(message) }}</span>
               </button>
               <div
@@ -107,7 +107,7 @@
                   <pre
                     class="cmd-output"
                     :class="{ 'cmd-output-condensed': isCommandOutputCondensed(message) }"
-                    v-text="message.commandExecution?.aggregatedOutput || '(no output)'"
+                    v-text="message.commandExecution?.aggregatedOutput || '（无输出）'"
                   ></pre>
                 </div>
               </div>
@@ -203,7 +203,7 @@
               >
                 <li v-for="imageUrl in message.images" :key="imageUrl" class="message-image-item">
                   <button class="message-image-button" type="button" @click="openImageModal(imageUrl)">
-                    <img class="message-image-preview" :src="imageUrl" alt="Message image preview" loading="lazy" />
+                    <img class="message-image-preview" :src="imageUrl" alt="消息图片预览" loading="lazy" />
                   </button>
                 </li>
               </ul>
@@ -250,7 +250,7 @@
                         @click="toggleCommandExpand(cmd)"
                       >
                         <span class="cmd-chevron" :class="{ 'cmd-chevron-open': isCommandExpanded(cmd) }">▶</span>
-                        <code class="cmd-label">{{ cmd.commandExecution?.command || '(command)' }}</code>
+                        <code class="cmd-label">{{ cmd.commandExecution?.command || '（命令）' }}</code>
                         <span class="cmd-status">{{ commandStatusLabel(cmd) }}</span>
                       </button>
                       <div
@@ -261,7 +261,7 @@
                           <pre
                             class="cmd-output"
                             :class="{ 'cmd-output-condensed': isCommandOutputCondensed(cmd) }"
-                            v-text="cmd.commandExecution?.aggregatedOutput || '(no output)'"
+                            v-text="cmd.commandExecution?.aggregatedOutput || '（无输出）'"
                           ></pre>
                         </div>
                       </div>
@@ -613,35 +613,35 @@
                   v-if="showRollbackButton(message)"
                   type="button"
                   class="message-rollback-button"
-                  aria-label="Rollback to this response"
-                  title="Rollback to this response"
+                  aria-label="回滚到这条回复"
+                  title="回滚到这条回复"
                   @click="rollbackResponse(message.id)"
                 >
                   <IconTablerArrowBackUp class="icon-svg message-rollback-icon" />
-                  <span class="message-rollback-label">Rollback</span>
+                  <span class="message-rollback-label">回滚</span>
                 </button>
                 <button
                   v-if="showForkResponseButton(message)"
                   type="button"
                   class="message-fork-button"
-                  aria-label="Fork thread from this response"
-                  title="Fork thread from this response"
+                  aria-label="从这条回复创建线程分支"
+                  title="从这条回复创建线程分支"
                   @click="forkResponse(message.id)"
                 >
                   <IconTablerGitFork class="icon-svg message-fork-icon" />
-                  <span class="message-fork-label">Fork</span>
+                  <span class="message-fork-label">分支</span>
                 </button>
                 <button
                   v-if="showCopyResponseButton(message)"
                   type="button"
                   class="message-copy-button"
                   :data-copied="copiedResponseAnchorId === message.id"
-                  :aria-label="copiedResponseAnchorId === message.id ? 'Response copied' : 'Copy response'"
-                  :title="copiedResponseAnchorId === message.id ? 'Response copied' : 'Copy response'"
+                  :aria-label="copiedResponseAnchorId === message.id ? '回复已复制' : '复制回复'"
+                  :title="copiedResponseAnchorId === message.id ? '回复已复制' : '复制回复'"
                   @click="copyResponse(message.id)"
                 >
                   <IconTablerCopy class="icon-svg message-copy-icon" />
-                  <span class="message-copy-label">{{ copiedResponseAnchorId === message.id ? 'Copied' : 'Copy' }}</span>
+                  <span class="message-copy-label">{{ copiedResponseAnchorId === message.id ? '已复制' : '复制' }}</span>
                 </button>
               </div>
             </article>
@@ -672,8 +672,8 @@
       v-if="showJumpToLatestButton"
       type="button"
       class="jump-to-latest-button"
-      title="Jump to latest"
-      aria-label="Jump to latest output"
+      title="跳到最新内容"
+      aria-label="跳到最新输出"
       @click="jumpToLatest"
     >
       <IconTablerArrowUp class="icon-svg jump-to-latest-icon" />
@@ -681,10 +681,10 @@
 
     <div v-if="modalImageUrl.length > 0" class="image-modal-backdrop" @click="closeImageModal">
       <div class="image-modal-content" @click.stop>
-        <button class="image-modal-close" type="button" aria-label="Close image preview" @click="closeImageModal">
+        <button class="image-modal-close" type="button" aria-label="关闭图片预览" @click="closeImageModal">
           <IconTablerX class="icon-svg" />
         </button>
-        <img class="image-modal-image" :src="modalImageUrl" alt="Expanded message image" />
+        <img class="image-modal-image" :src="modalImageUrl" alt="放大的消息图片" />
       </div>
     </div>
 
@@ -696,10 +696,10 @@
       @click.stop
     >
       <button type="button" class="file-link-context-menu-item" @click="openFileLinkContextBrowse">
-        Open link
+        打开链接
       </button>
       <button type="button" class="file-link-context-menu-item" @click="copyFileLinkContextLink">
-        Copy link
+        复制链接
       </button>
       <button
         v-if="fileLinkContextEditUrl"
@@ -707,7 +707,7 @@
         class="file-link-context-menu-item"
         @click="openFileLinkContextEdit"
       >
-        Edit file
+        编辑文件
       </button>
     </div>
 
@@ -715,7 +715,7 @@
       <div class="diff-viewer-shell" @click.stop>
         <aside v-if="!isMobile" class="diff-viewer-sidebar">
           <div class="diff-viewer-sidebar-header">
-            <p class="diff-viewer-sidebar-title">Changed files</p>
+            <p class="diff-viewer-sidebar-title">已更改文件</p>
             <p class="diff-viewer-sidebar-count">{{ formatFileChangeCountLabel(diffViewerChanges.length) }}</p>
           </div>
           <div class="diff-viewer-sidebar-list">
@@ -760,15 +760,15 @@
               >
                 {{ formatFileChangeCountLabel(diffViewerChanges.length) }}
               </button>
-              <button class="image-modal-close diff-viewer-close" type="button" aria-label="Close diff viewer" @click="closeDiffViewer">
+              <button class="image-modal-close diff-viewer-close" type="button" aria-label="关闭差异查看器" @click="closeDiffViewer">
                 <IconTablerX class="icon-svg" />
               </button>
             </div>
           </div>
 
           <div v-if="!hasDiffViewerContent(activeDiffViewerChange)" class="diff-viewer-empty">
-            <p class="diff-viewer-empty-title">No diff available</p>
-            <p class="diff-viewer-empty-text">This summary was restored from the final answer text, but the thread history does not include patch diff content for this file.</p>
+            <p class="diff-viewer-empty-title">没有可显示的差异</p>
+            <p class="diff-viewer-empty-text">这个摘要是从最终回答文本恢复的，但当前线程历史里没有这个文件的补丁差异内容。</p>
           </div>
 
           <div v-else class="diff-viewer-panel">
@@ -800,7 +800,7 @@
             <div class="diff-viewer-mobile-sheet" @click.stop>
               <div class="diff-viewer-mobile-sheet-handle" aria-hidden="true"></div>
               <div class="diff-viewer-mobile-sheet-header">
-                <p class="diff-viewer-sidebar-title">Changed files</p>
+            <p class="diff-viewer-sidebar-title">已更改文件</p>
                 <p class="diff-viewer-sidebar-count">{{ formatFileChangeCountLabel(diffViewerChanges.length) }}</p>
               </div>
               <div class="diff-viewer-mobile-sheet-list">
@@ -1066,9 +1066,9 @@ function isCommandGroupExpanded(message: UiMessage): boolean {
 function commandGroupSummaryLabel(message: UiMessage): string {
   const commands = getCommandBlockForLatest(message)
   const count = commands.length
-  const latestCommand = message.commandExecution?.command?.trim() || '(command)'
-  const countLabel = count === 1 ? '1 command' : `${count} commands`
-  return `${countLabel} · latest: ${latestCommand}`
+  const latestCommand = message.commandExecution?.command?.trim() || '（命令）'
+  const countLabel = count === 1 ? '1 条命令' : `${count} 条命令`
+  return `${countLabel} · 最新：${latestCommand}`
 }
 
 function commandGroupSummaryStatus(message: UiMessage): string {
@@ -1134,11 +1134,11 @@ function commandStatusLabel(message: UiMessage): string {
   if (!ce) return ''
   const compact = isCommandCompact(message)
   switch (ce.status) {
-    case 'inProgress': return compact ? 'Running' : '⟳ Running'
-    case 'completed': return ce.exitCode === 0 ? (compact ? 'Done' : '✓ Completed') : `Exit ${ce.exitCode ?? '?'}`
-    case 'failed': return compact ? 'Failed' : '✗ Failed'
-    case 'declined': return compact ? 'Declined' : '⊘ Declined'
-    case 'interrupted': return compact ? 'Stopped' : '⊘ Interrupted'
+    case 'inProgress': return compact ? '运行中' : '⟳ 运行中'
+    case 'completed': return ce.exitCode === 0 ? (compact ? '完成' : '✓ 已完成') : `退出 ${ce.exitCode ?? '?'}`
+    case 'failed': return compact ? '失败' : '✗ 失败'
+    case 'declined': return compact ? '已拒绝' : '⊘ 已拒绝'
+    case 'interrupted': return compact ? '已停止' : '⊘ 已中断'
     default: return ''
   }
 }
@@ -1521,7 +1521,7 @@ function buildCopyableMessageContent(message: UiMessage): string {
   const sections: string[] = []
   const rawTextContent = message.text.trim() || buildPlanCopyText(message)
   const textContent = isPlanMessage(message) && rawTextContent
-    ? `Plan\n${rawTextContent}`
+    ? `计划\n${rawTextContent}`
     : rawTextContent
   if (textContent) {
     sections.push(textContent)
@@ -1531,14 +1531,14 @@ function buildCopyableMessageContent(message: UiMessage): string {
     .map((attachment) => attachment.path.trim())
     .filter((pathValue) => pathValue.length > 0)
   if (attachmentLines.length > 0) {
-    sections.push(`Files:\n${attachmentLines.join('\n')}`)
+    sections.push(`文件：\n${attachmentLines.join('\n')}`)
   }
 
   const imageLines = (message.images ?? [])
     .map((imageUrl) => imageUrl.trim())
     .filter((imageUrl) => imageUrl.length > 0)
   if (imageLines.length > 0) {
-    sections.push(`Images:\n${imageLines.join('\n')}`)
+    sections.push(`图片：\n${imageLines.join('\n')}`)
   }
 
   return sections.join('\n\n').trim()
@@ -1764,11 +1764,11 @@ function readStandaloneFileChangeSummary(message: UiMessage): TurnFileChangeSumm
 
 function fileChangeOperationLabel(change: UiFileChange): string {
   if (change.operation === 'update' && change.movedToPath) {
-    return change.addedLineCount > 0 || change.removedLineCount > 0 ? 'Moved + edited' : 'Moved'
+    return change.addedLineCount > 0 || change.removedLineCount > 0 ? '已移动并编辑' : '已移动'
   }
-  if (change.operation === 'add') return 'Added'
-  if (change.operation === 'delete') return 'Deleted'
-  return 'Edited'
+  if (change.operation === 'add') return '已新增'
+  if (change.operation === 'delete') return '已删除'
+  return '已编辑'
 }
 
 function fileChangeOperationTone(change: UiFileChange): 'add' | 'delete' | 'update' | 'move' {
@@ -1830,15 +1830,15 @@ function summarizeFileChangeKinds(summary: TurnFileChangeSummary | null): string
   }
 
   const parts: string[] = []
-  if (edited > 0) parts.push(`${edited} edited`)
-  if (added > 0) parts.push(`${added} added`)
-  if (deleted > 0) parts.push(`${deleted} deleted`)
-  if (moved > 0) parts.push(`${moved} moved`)
-  return parts.join(', ')
+  if (edited > 0) parts.push(`${edited} 个已编辑`)
+  if (added > 0) parts.push(`${added} 个已新增`)
+  if (deleted > 0) parts.push(`${deleted} 个已删除`)
+  if (moved > 0) parts.push(`${moved} 个已移动`)
+  return parts.join('，')
 }
 
 function fileChangeSummaryLabel(summary: TurnFileChangeSummary | null): string {
-  if (!summary || summary.changes.length === 0) return 'Modified files'
+  if (!summary || summary.changes.length === 0) return '修改过的文件'
   const countLabel = formatFileChangeCountLabel(summary.changes.length)
   const kindSummary = summarizeFileChangeKinds(summary)
   return kindSummary ? `${countLabel} · ${kindSummary}` : countLabel
@@ -1848,7 +1848,7 @@ function fileChangeSummaryStatusParts(summary: TurnFileChangeSummary | null): Fi
   if (!summary || summary.changes.length === 0) return []
   const totalAdded = summary.changes.reduce((sum, change) => sum + change.addedLineCount, 0)
   const totalRemoved = summary.changes.reduce((sum, change) => sum + change.removedLineCount, 0)
-  const fallbackLabel = summary.changes.some((change) => change.movedToPath) ? 'Moved' : 'Ready'
+  const fallbackLabel = summary.changes.some((change) => change.movedToPath) ? '已移动' : '已就绪'
   return buildFileChangeDeltaParts(totalAdded, totalRemoved, fallbackLabel)
 }
 
@@ -1870,7 +1870,7 @@ function buildFileChangeCopyText(summary: TurnFileChangeSummary | null): string 
     const delta = formatFileChangeDelta(change)
     return `- ${fileChangeOperationLabel(change)}: ${pathLabel}${movedLabel}${delta ? ` (${delta})` : ''}`
   })
-  return `Modified files:\n${lines.join('\n')}`.trim()
+  return `修改过的文件：\n${lines.join('\n')}`.trim()
 }
 
 const diffViewerChanges = computed<UiFileChange[]>(() => activeDiffViewerSummary.value?.changes ?? [])
@@ -3389,12 +3389,12 @@ function readRequestReason(request: UiServerRequest): string {
 }
 
 function requestDisplayTitle(request: UiServerRequest): string {
-  if (request.method === 'item/commandExecution/requestApproval') return 'Command approval required'
-  if (request.method === 'item/fileChange/requestApproval') return 'File change approval required'
-  if (request.method === 'item/permissions/requestApproval') return 'Permissions approval required'
-  if (request.method === 'mcpServer/elicitation/request') return 'MCP server input required'
-  if (request.method === 'item/tool/requestUserInput') return 'Input required'
-  if (request.method === 'item/tool/call') return 'Tool call waiting for response'
+  if (request.method === 'item/commandExecution/requestApproval') return '需要批准命令'
+  if (request.method === 'item/fileChange/requestApproval') return '需要批准文件更改'
+  if (request.method === 'item/permissions/requestApproval') return '需要批准权限'
+  if (request.method === 'mcpServer/elicitation/request') return 'MCP 服务器需要输入'
+  if (request.method === 'item/tool/requestUserInput') return '需要输入'
+  if (request.method === 'item/tool/call') return '工具调用等待回复'
   return request.method
 }
 
@@ -3740,7 +3740,7 @@ function onRespondToolCallFailure(requestId: number): void {
       contentItems: [
         {
           type: 'inputText',
-          text: 'Tool call rejected from codex-web-local UI.',
+          text: '工具调用已被 codex-web-local UI 拒绝。',
         },
       ],
     },
@@ -3769,7 +3769,7 @@ function onRejectUnknownRequest(requestId: number): void {
     id: requestId,
     error: {
       code: -32000,
-      message: 'Rejected from codex-web-local UI.',
+      message: '请求已被 CodexUI 拒绝。',
     },
   })
 }

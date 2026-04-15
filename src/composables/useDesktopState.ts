@@ -940,13 +940,13 @@ function toOptimisticThreadTitle(message: string): string {
     .map((line) => line.trim())
     .find((line) => line.length > 0)
 
-  if (!firstLine) return 'Untitled thread'
+  if (!firstLine) return '未命名线程'
   return firstLine.slice(0, 80)
 }
 
 function toForkedThreadTitle(title: string): string {
-  const normalizedTitle = title.trim() || 'Untitled thread'
-  return /^fork:\s+/iu.test(normalizedTitle) ? normalizedTitle : `Fork: ${normalizedTitle}`
+  const normalizedTitle = title.trim() || '未命名线程'
+  return /^(?:fork|分支)\s*[:：]\s+/iu.test(normalizedTitle) ? normalizedTitle : `分支：${normalizedTitle}`
 }
 
 export function useDesktopState() {
@@ -983,8 +983,8 @@ export function useDesktopState() {
   const eventUnreadByThreadId = ref<Record<string, boolean>>({})
   const availableModelIds = ref<string[]>([])
   const availableCollaborationModes = ref<CollaborationModeOption[]>([
-    { value: 'default', label: 'Default' },
-    { value: 'plan', label: 'Plan' },
+    { value: 'default', label: '默认' },
+    { value: 'plan', label: '计划' },
   ])
   const selectedCollaborationModeByContext = ref<Record<string, CollaborationModeKind>>(
     loadSelectedCollaborationModeMap(),
@@ -1078,7 +1078,7 @@ export function useDesktopState() {
 
     if (!activity && !reasoningText && !errorText) return null
     return {
-      activityLabel: activity?.label || 'Thinking',
+      activityLabel: activity?.label || '思考中',
       activityDetails: activity?.details ?? [],
       reasoningText,
       errorText,
@@ -1268,7 +1268,7 @@ export function useDesktopState() {
       error.value = ''
       setTurnSummaryForThread(threadId, null)
       setTurnActivityForThread(threadId, {
-        label: 'Thinking',
+        label: '思考中',
         details: buildPendingTurnDetails(MODEL_FALLBACK_ID, pending.effort, pending.collaborationMode),
       })
       setThreadInProgress(threadId, true)
@@ -1298,7 +1298,7 @@ export function useDesktopState() {
       pendingThreadsRefresh = true
       await syncFromNotifications()
     } catch (unknownError) {
-      const errorMessage = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      const errorMessage = unknownError instanceof Error ? unknownError.message : '未知应用错误'
       setTurnErrorForThread(threadId, errorMessage)
       error.value = errorMessage
       setThreadInProgress(threadId, false)
@@ -1330,7 +1330,7 @@ export function useDesktopState() {
       await setCodexSpeedMode(nextMode)
     } catch (unknownError) {
       selectedSpeedMode.value = previousMode
-      error.value = unknownError instanceof Error ? unknownError.message : 'Failed to update Fast mode'
+      error.value = unknownError instanceof Error ? unknownError.message : '更新快速模式失败'
     } finally {
       isUpdatingSpeedMode.value = false
     }
@@ -1353,11 +1353,11 @@ export function useDesktopState() {
     effort: ReasoningEffort | '',
     collaborationMode: CollaborationModeKind = selectedCollaborationMode.value,
   ): string[] {
-    const modelLabel = modelId.trim() || 'default'
-    const effortLabel = effort || 'default'
-    const modeLabel = collaborationMode === 'plan' ? 'Plan' : 'Default'
-    const speedLabel = selectedSpeedMode.value === 'fast' ? 'Fast' : 'Standard'
-    return [`Mode: ${modeLabel}`, `Model: ${modelLabel}`, `Thinking: ${effortLabel}`, `Speed: ${speedLabel}`]
+    const modelLabel = modelId.trim() || '默认'
+    const effortLabel = effort || '默认'
+    const modeLabel = collaborationMode === 'plan' ? '计划' : '默认'
+    const speedLabel = selectedSpeedMode.value === 'fast' ? '快速' : '标准'
+    return [`模式：${modeLabel}`, `模型：${modelLabel}`, `思考：${effortLabel}`, `速度：${speedLabel}`]
   }
 
   async function refreshModelPreferences(): Promise<void> {
@@ -1754,7 +1754,7 @@ export function useDesktopState() {
       return
     }
 
-    const normalizedLabel = sanitizeDisplayText(activity.label) || 'Thinking'
+    const normalizedLabel = sanitizeDisplayText(activity.label) || '思考中'
     const incomingDetails = activity.details
       .map((line) => sanitizeDisplayText(line))
       .filter((line) => line.length > 0 && line !== normalizedLabel)
@@ -2475,7 +2475,7 @@ export function useDesktopState() {
       return {
         threadId,
         activity: {
-          label: 'Thinking',
+          label: '思考中',
           details: [],
         },
       }
@@ -2489,7 +2489,7 @@ export function useDesktopState() {
         return {
           threadId,
           activity: {
-            label: 'Thinking',
+            label: '思考中',
             details: [],
           },
         }
@@ -2554,7 +2554,7 @@ export function useDesktopState() {
       return {
         threadId,
         activity: {
-          label: 'Thinking',
+          label: '思考中',
           details: [],
         },
       }
@@ -3104,7 +3104,7 @@ export function useDesktopState() {
     if (planUpdate) {
       upsertLivePlanMessage(planUpdate.threadId, planUpdate.message)
       setTurnActivityForThread(planUpdate.threadId, {
-        label: 'Planning',
+        label: '规划中',
         details: planUpdate.message.plan?.steps.map((step) => step.step).slice(0, 2) ?? [],
       })
     }
@@ -3113,7 +3113,7 @@ export function useDesktopState() {
     if (planDelta) {
       upsertLivePlanMessage(planDelta.threadId, planDelta.message)
       setTurnActivityForThread(planDelta.threadId, {
-        label: 'Planning',
+        label: '规划中',
         details: [],
       })
     }
@@ -3500,7 +3500,7 @@ export function useDesktopState() {
         void ancillaryRefresh
       }
     } catch (unknownError) {
-      error.value = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      error.value = unknownError instanceof Error ? unknownError.message : '未知应用错误'
     }
   }
 
@@ -3513,7 +3513,7 @@ export function useDesktopState() {
         refreshSkills(),
       ])
     } catch (unknownError) {
-      error.value = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      error.value = unknownError instanceof Error ? unknownError.message : '未知应用错误'
     }
   }
 
@@ -3526,7 +3526,7 @@ export function useDesktopState() {
         await loadMessages(selectedThreadId.value)
       }
     } catch (unknownError) {
-      error.value = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      error.value = unknownError instanceof Error ? unknownError.message : '未知应用错误'
     }
   }
 
@@ -3540,7 +3540,7 @@ export function useDesktopState() {
       applyThreadFlags()
       void persistThreadTitle(threadId, normalizedName)
     } catch (unknownError) {
-      error.value = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      error.value = unknownError instanceof Error ? unknownError.message : '未知应用错误'
     }
   }
 
@@ -3550,7 +3550,7 @@ export function useDesktopState() {
 
     const sourceThread = flattenThreads(sourceGroups.value).find((row) => row.id === sourceThreadId)
     const sourceCwd = sourceThread?.cwd?.trim() ?? ''
-    const sourceTitle = sourceThread?.title?.trim() ?? 'Forked chat'
+    const sourceTitle = sourceThread?.title?.trim() ?? '聊天分支'
     const selectedModel = readModelIdForThread(sourceThreadId)
     error.value = ''
 
@@ -3570,7 +3570,7 @@ export function useDesktopState() {
       await loadMessages(nextThreadId)
       return nextThreadId
     } catch (unknownError) {
-      error.value = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      error.value = unknownError instanceof Error ? unknownError.message : '未知应用错误'
       return ''
     }
   }
@@ -3580,7 +3580,7 @@ export function useDesktopState() {
     if (!normalizedThreadId || !Number.isInteger(turnIndex) || turnIndex < 0) return ''
 
     if (inProgressById.value[normalizedThreadId] === true) {
-      error.value = 'Finish the current turn before forking from a response.'
+      error.value = '请先完成当前轮次，再从回复创建分支。'
       return ''
     }
 
@@ -3588,7 +3588,7 @@ export function useDesktopState() {
       try {
         await loadMessages(normalizedThreadId)
       } catch (unknownError) {
-        error.value = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+        error.value = unknownError instanceof Error ? unknownError.message : '未知应用错误'
         return ''
       }
     }
@@ -3612,7 +3612,7 @@ export function useDesktopState() {
       if (!forkedThreadId) return ''
 
       const forkedCwd = forked.cwd.trim() || sourceThread?.cwd?.trim() || ''
-      const forkedThreadTitle = toForkedThreadTitle(sourceThread?.title || sourceThread?.preview || 'Untitled thread')
+      const forkedThreadTitle = toForkedThreadTitle(sourceThread?.title || sourceThread?.preview || '未命名线程')
       insertOptimisticThread(forkedThreadId, forkedCwd, forkedThreadTitle)
       setThreadModelId(forkedThreadId, forked.model)
       setPersistedMessagesForThread(forkedThreadId, forked.messages)
@@ -3646,7 +3646,7 @@ export function useDesktopState() {
       void loadThreads().catch(() => {})
       return forkedThreadId
     } catch (unknownError) {
-      error.value = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      error.value = unknownError instanceof Error ? unknownError.message : '未知应用错误'
       return ''
     }
   }
@@ -3726,7 +3726,7 @@ export function useDesktopState() {
     if (isInProgress) {
       shouldAutoScrollOnNextAgentEvent = true
       void startTurnForThread(threadId, nextText, imageUrls, skills, fileAttachments).catch((unknownError) => {
-        const errorMessage = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+        const errorMessage = unknownError instanceof Error ? unknownError.message : '未知应用错误'
         setTurnErrorForThread(threadId, errorMessage)
         error.value = errorMessage
       })
@@ -3739,7 +3739,7 @@ export function useDesktopState() {
     setTurnActivityForThread(
       threadId,
       {
-        label: 'Thinking',
+        label: '思考中',
         details: buildPendingTurnDetails(
           readModelIdForThread(threadId),
           selectedReasoningEffort.value,
@@ -3756,7 +3756,7 @@ export function useDesktopState() {
       shouldAutoScrollOnNextAgentEvent = false
       setThreadInProgress(threadId, false)
       setTurnActivityForThread(threadId, null)
-      const errorMessage = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      const errorMessage = unknownError instanceof Error ? unknownError.message : '未知应用错误'
       setTurnErrorForThread(threadId, errorMessage)
       error.value = errorMessage
       throw unknownError
@@ -3810,7 +3810,7 @@ export function useDesktopState() {
       setTurnActivityForThread(
         threadId,
         {
-          label: 'Thinking',
+          label: '思考中',
           details: buildPendingTurnDetails(
             selectedModelId.value,
             selectedReasoningEffort.value,
@@ -3828,7 +3828,7 @@ export function useDesktopState() {
           shouldAutoScrollOnNextAgentEvent = false
           setThreadInProgress(threadId, false)
           setTurnActivityForThread(threadId, null)
-          const errorMessage = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+          const errorMessage = unknownError instanceof Error ? unknownError.message : '未知应用错误'
           setTurnErrorForThread(threadId, errorMessage)
           error.value = errorMessage
         })
@@ -3843,7 +3843,7 @@ export function useDesktopState() {
         setThreadInProgress(threadId, false)
         setTurnActivityForThread(threadId, null)
       }
-      const errorMessage = unknownError instanceof Error ? unknownError.message : 'Unknown application error'
+      const errorMessage = unknownError instanceof Error ? unknownError.message : '未知应用错误'
       if (threadId) {
         setTurnErrorForThread(threadId, errorMessage)
       }
@@ -3962,7 +3962,7 @@ export function useDesktopState() {
     setTurnActivityForThread(
       threadId,
       {
-        label: 'Thinking',
+        label: '思考中',
         details: buildPendingTurnDetails(
           readModelIdForThread(threadId),
           selectedReasoningEffort.value,

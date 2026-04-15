@@ -50,7 +50,7 @@
           </button>
         </li>
       </ul>
-      <div v-else class="search-dropdown-empty">No results</div>
+      <div v-else class="search-dropdown-empty">{{ zhCN.dropdown.noResults }}</div>
     </div>
   </div>
 </template>
@@ -58,6 +58,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import IconTablerChevronDown from '../icons/IconTablerChevronDown.vue'
+import { zhCN } from '../../copy/zhCN'
 
 export type SearchDropdownOption = {
   value: string
@@ -89,12 +90,12 @@ const openDirection = computed(() => props.openDirection ?? 'down')
 const selected = computed(() => new Set(props.selectedValues))
 
 const displayLabel = computed(() => {
-  if (props.selectedValues.length === 0) return props.placeholder || 'Select...'
+  if (props.selectedValues.length === 0) return props.placeholder || zhCN.dropdown.select
   if (props.selectedValues.length === 1) {
     const opt = props.options.find((o) => o.value === props.selectedValues[0])
-    return opt?.label || props.placeholder || 'Select...'
+    return opt?.label || props.placeholder || zhCN.dropdown.select
   }
-  return `${props.selectedValues.length} selected`
+  return zhCN.dropdown.selectedCount(props.selectedValues.length)
 })
 
 const filtered = computed(() => {
