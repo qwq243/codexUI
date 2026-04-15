@@ -1,15 +1,15 @@
-# 🔥 codexUI Chinese UI Fork
+# 🔥 codexUI 中文界面版
 
-### 🚀 Simplified Chinese UI fork for CodexUI on Linux, Windows, and Termux 🚀
+### 🚀 一个以简体中文界面为主的 codexUI 分支 🚀
 
 [![npm](https://img.shields.io/npm/v/codexapp?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/codexapp)
 [![platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20Android-blue?style=for-the-badge)](#-quick-start)
 [![node](https://img.shields.io/badge/Node-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![license](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
 
-> **Codex UI in your browser, with Simplified Chinese UI copy.**
+> **浏览器里的 Codex UI，主要改成了简体中文界面。**
 >  
-> **This fork stays close to upstream CodexUI. The main difference is the Chinese interface text, not a separate product direction.**
+> **这个分支尽量保持和上游一致，主要差异就是中文界面，不是另一套独立产品。**
 
 ```text
  ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗██╗   ██╗██╗
@@ -23,26 +23,26 @@
 ---
 
 ## 🤯 What Is This?
-This repository is a **Simplified Chinese UI fork of `codexapp` / `codexUI`**.
+这是一个 **`codexapp` / `codexUI` 的简体中文界面分支**。
 
-It keeps the upstream browser-accessible Codex app-server workflow, but the focus of this fork is straightforward:
+这个分支的目标很简单：
 
-- translate the main UI copy to Simplified Chinese
-- keep the launcher and local self-hosted workflow usable on Windows/Linux/Termux
-- avoid drifting into a separate feature fork unless clearly needed
+- 把主要界面文案改成简体中文
+- 保留上游原本的本地启动方式
+- 尽量少偏离上游
 
-You run one command. It starts a local web server. You open it from your machine, your LAN, or wherever your setup allows.  
+启动后会在本地起一个服务，你直接用浏览器打开就行。  
 
-**TL;DR 🧠: upstream CodexUI experience, mainly localized into Simplified Chinese.**
+**一句话：就是中文界面的 codexUI。**
 
 ---
 
 ## ⚡ Quick Start
 > **The main event.**
 
-### Simple local startup for this Chinese UI fork
+### 这个分支最简单的启动方法
 
-If you just want to run this fork locally, use the repository launcher.
+如果你只是想本地跑起来，直接用仓库里的启动脚本。
 
 #### Windows
 
@@ -51,25 +51,25 @@ pnpm install
 .\start-codexui.bat
 ```
 
-What it does:
+说明：
 
-- reuses the existing build by default
-- starts the local CodexUI service on port `5900`
-- avoids the usual Vite dev port `4173` conflict
+- 默认复用已有构建结果
+- 默认启动在 `5900` 端口
+- 避开常见的 `4173` 端口冲突
 
-If you need a fresh rebuild first:
+如果你想先强制重新构建：
 
 ```powershell
 .\start-codexui.bat --build
 ```
 
-Then open:
+然后打开：
 
 ```text
 http://127.0.0.1:5900
 ```
 
-#### Linux / macOS / manual start
+#### Linux / macOS 手动启动
 
 ```bash
 pnpm install
@@ -77,9 +77,9 @@ pnpm run build
 node dist-cli/index.js . --port 5900 --no-tunnel --no-login
 ```
 
-This is the simplest "just run the app" path. Use the `npx codexapp` flow below if you want the package-style startup instead.
+这是最直接的本地启动方式。下面的 `npx codexapp` 是包形式启动。
 
-### Package-style startup
+### 用 `npx` 启动
 
 ```bash
 # 🔓 Run instantly (recommended)
@@ -173,7 +173,7 @@ Notes:
 ## ✨ Features
 > **The payload.**
 
-- 🇨🇳 Simplified Chinese UI copy for the main desktop/web flows
+- 🇨🇳 主要桌面/Web 界面已改成简体中文
 - 🚀 One-command launch with `npx codexapp`
 - 🌍 Cross-platform support for Linux, Windows, and Termux on Android
 - 🖥️ Browser-first Codex UI flow on `http://localhost:18923`
@@ -214,7 +214,7 @@ Bot commands:
 ## 🧩 Recent Product Features (from main commits)
 > **Not just launch. Actual UX upgrades.**
 
-This fork intentionally does **not** try to out-scope upstream. The main fork-specific goal is Chinese localization and small launcher/workflow adjustments around that.
+这个分支不打算做成另一个大分叉，重点还是中文界面和少量启动体验调整。
 
 - 🗂️ Searchable project picker in new-thread flow
 - ➕ Inline "Add new project" input inside picker (no browser prompt)
@@ -299,7 +299,7 @@ This fork intentionally does **not** try to out-scope upstream. The main fork-sp
 
 ## 🤝 Contributing
 Issues and PRs are welcome.  
-Bring bug reports, Chinese copy fixes, platform notes, and setup improvements.
+欢迎提 Bug、改中文文案、补启动说明。
 
 ---
 
@@ -312,8 +312,8 @@ Built for speed, portability, and a little bit of chaos 😏
 
 ---
 
-This repo is a Chinese-localized fork in the `codexUI` line.
+这个仓库是 `codexUI` 系列里的中文界面分支。
 
-Upstream lineage:
+上游来源：
 - [friuns2/codexUI](https://github.com/friuns2/codexUI)
 - originally forked from [pavel-voronin/codex-web-local](https://github.com/pavel-voronin/codex-web-local) by Pavel Voronin
