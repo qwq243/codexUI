@@ -1,15 +1,15 @@
-# 🔥 codexapp
+# 🔥 codexUI Chinese UI Fork
 
-### 🚀 Run Codex App UI Anywhere: Linux, Windows, or Termux on Android 🚀
+### 🚀 Simplified Chinese UI fork for CodexUI on Linux, Windows, and Termux 🚀
 
 [![npm](https://img.shields.io/npm/v/codexapp?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/package/codexapp)
 [![platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20Android-blue?style=for-the-badge)](#-quick-start)
 [![node](https://img.shields.io/badge/Node-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![license](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
 
-> **Codex UI in your browser. No drama. One command.**
+> **Codex UI in your browser, with Simplified Chinese UI copy.**
 >  
-> **Yes, that is your Codex desktop app experience exposed over web UI. Yes, it runs cross-platform.**
+> **This fork stays close to upstream CodexUI. The main difference is the Chinese interface text, not a separate product direction.**
 
 ```text
  ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗██╗   ██╗██╗
@@ -23,16 +23,63 @@
 ---
 
 ## 🤯 What Is This?
-**`codexapp`** is a lightweight bridge that gives you a browser-accessible UI for Codex app-server workflows.
+This repository is a **Simplified Chinese UI fork of `codexapp` / `codexUI`**.
+
+It keeps the upstream browser-accessible Codex app-server workflow, but the focus of this fork is straightforward:
+
+- translate the main UI copy to Simplified Chinese
+- keep the launcher and local self-hosted workflow usable on Windows/Linux/Termux
+- avoid drifting into a separate feature fork unless clearly needed
 
 You run one command. It starts a local web server. You open it from your machine, your LAN, or wherever your setup allows.  
 
-**TL;DR 🧠: Codex app UI, unlocked for Linux, Windows, and Termux-powered Android setups.**
+**TL;DR 🧠: upstream CodexUI experience, mainly localized into Simplified Chinese.**
 
 ---
 
 ## ⚡ Quick Start
 > **The main event.**
+
+### Simple local startup for this Chinese UI fork
+
+If you just want to run this fork locally, use the repository launcher.
+
+#### Windows
+
+```powershell
+pnpm install
+.\start-codexui.bat
+```
+
+What it does:
+
+- reuses the existing build by default
+- starts the local CodexUI service on port `5900`
+- avoids the usual Vite dev port `4173` conflict
+
+If you need a fresh rebuild first:
+
+```powershell
+.\start-codexui.bat --build
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5900
+```
+
+#### Linux / macOS / manual start
+
+```bash
+pnpm install
+pnpm run build
+node dist-cli/index.js . --port 5900 --no-tunnel --no-login
+```
+
+This is the simplest "just run the app" path. Use the `npx codexapp` flow below if you want the package-style startup instead.
+
+### Package-style startup
 
 ```bash
 # 🔓 Run instantly (recommended)
@@ -126,6 +173,7 @@ Notes:
 ## ✨ Features
 > **The payload.**
 
+- 🇨🇳 Simplified Chinese UI copy for the main desktop/web flows
 - 🚀 One-command launch with `npx codexapp`
 - 🌍 Cross-platform support for Linux, Windows, and Termux on Android
 - 🖥️ Browser-first Codex UI flow on `http://localhost:18923`
@@ -165,6 +213,8 @@ Bot commands:
 
 ## 🧩 Recent Product Features (from main commits)
 > **Not just launch. Actual UX upgrades.**
+
+This fork intentionally does **not** try to out-scope upstream. The main fork-specific goal is Chinese localization and small launcher/workflow adjustments around that.
 
 - 🗂️ Searchable project picker in new-thread flow
 - ➕ Inline "Add new project" input inside picker (no browser prompt)
@@ -249,7 +299,7 @@ Bot commands:
 
 ## 🤝 Contributing
 Issues and PRs are welcome.  
-Bring bug reports, platform notes, and setup improvements.
+Bring bug reports, Chinese copy fixes, platform notes, and setup improvements.
 
 ---
 
@@ -262,4 +312,8 @@ Built for speed, portability, and a little bit of chaos 😏
 
 ---
 
-Forked from [pavel-voronin/codex-web-local](https://github.com/pavel-voronin/codex-web-local) by Pavel Voronin.
+This repo is a Chinese-localized fork in the `codexUI` line.
+
+Upstream lineage:
+- [friuns2/codexUI](https://github.com/friuns2/codexUI)
+- originally forked from [pavel-voronin/codex-web-local](https://github.com/pavel-voronin/codex-web-local) by Pavel Voronin
